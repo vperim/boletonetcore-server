@@ -37,7 +37,7 @@ env:
   DOTNET_VERSION: '9.0.x'
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/boletonetcore-server
-  NUGET_SOURCE: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+  NUGET_SOURCE: https://api.nuget.org/v3/index.json
   NUGET_DIRECTORY: ${{ github.workspace }}/nuget
 
 jobs:
@@ -267,16 +267,18 @@ jobs:
           echo "Created packages:" >> $GITHUB_STEP_SUMMARY
           ls -lah ${{ env.NUGET_DIRECTORY }} >> $GITHUB_STEP_SUMMARY
 
-      - name: Push to GitHub Packages
+      - name: Push to NuGet.org
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           dotnet nuget push "${{ env.NUGET_DIRECTORY }}/*.nupkg" \
+            --api-key "$NUGET_API_KEY" \
             --source ${{ env.NUGET_SOURCE }} \
-            --api-key ${{ secrets.GITHUB_TOKEN }} \
             --skip-duplicate
 
           dotnet nuget push "${{ env.NUGET_DIRECTORY }}/*.snupkg" \
+            --api-key "$NUGET_API_KEY" \
             --source ${{ env.NUGET_SOURCE }} \
-            --api-key ${{ secrets.GITHUB_TOKEN }} \
             --skip-duplicate || true
 
       - name: Upload NuGet artifacts
