@@ -1,0 +1,67 @@
+# IDE and editor files
+**/.classpath
+**/.dockerignore
+**/.project
+**/.settings
+**/.toolstarget
+**/.vs
+**/.vscode
+**/.idea
+**/*.*proj.user
+**/*.dbmdl
+**/*.jfm
+
+# Build outputs
+**/bin
+**/obj
+**/out
+**/publish
+
+# Git
+**/.git
+**/.gitignore
+**/.gitattributes
+
+# Environment and secrets
+**/.env
+**/.env.*
+**/secrets.dev.yaml
+**/values.dev.yaml
+**/appsettings.*.local.json
+
+# Docker files (avoid recursive copy)
+**/docker-compose*
+**/Dockerfile*
+
+# Kubernetes/Helm
+**/azds.yaml
+**/charts
+**/*.yaml
+!**/appsettings*.json
+
+# Node (if any frontend tooling)
+**/node_modules
+**/npm-debug.log
+
+# Test projects and results
+**/*Tests/
+**/*IntegrationTests/
+**/TestResults
+**/coverage
+
+# Documentation
+LICENSE
+README.md
+CHANGELOG.md
+docs/
+
+# Example/sample projects
+**/*Exemplo*
+**/*Example*
+**/*Sample*
+
+# Git info for labels (keep these)
+!.git/HEAD
+!.git/config
+!.git/packed-refs
+!.git/refs/heads/**

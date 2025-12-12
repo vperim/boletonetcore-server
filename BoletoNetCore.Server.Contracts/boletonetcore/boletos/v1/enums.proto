@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+option csharp_namespace = "BoletoNetCore.Server.Contracts.Generated.V1";
+
+package boletonetcore.boletos.v1;
+
+// Document species type
+enum TipoEspecieDocumento {
+    TIPO_ESPECIE_DOCUMENTO_UNSPECIFIED = 0;
+    TIPO_ESPECIE_DOCUMENTO_CH = 1;   // Cheque
+    TIPO_ESPECIE_DOCUMENTO_DM = 2;   // Duplicata Mercantil
+    TIPO_ESPECIE_DOCUMENTO_DMI = 3;  // Duplicata Mercantil Indicacao
+    TIPO_ESPECIE_DOCUMENTO_DS = 4;   // Duplicata de Servico
+    TIPO_ESPECIE_DOCUMENTO_DSI = 5;  // Duplicata de Servico Indicacao
+    TIPO_ESPECIE_DOCUMENTO_DR = 6;   // Duplicata Rural
+    TIPO_ESPECIE_DOCUMENTO_LC = 7;   // Letra de Cambio
+    TIPO_ESPECIE_DOCUMENTO_NCC = 8;  // Nota de Credito Comercial
+    TIPO_ESPECIE_DOCUMENTO_NCE = 9;  // Nota de Credito Exportacao
+    TIPO_ESPECIE_DOCUMENTO_NCI = 10; // Nota de Credito Industrial
+    TIPO_ESPECIE_DOCUMENTO_NCR = 11; // Nota de Credito Rural
+    TIPO_ESPECIE_DOCUMENTO_NP = 12;  // Nota Promissoria
+    TIPO_ESPECIE_DOCUMENTO_NPR = 13; // Nota Promissoria Rural
+    TIPO_ESPECIE_DOCUMENTO_TM = 14;  // Triplicata Mercantil
+    TIPO_ESPECIE_DOCUMENTO_TS = 15;  // Triplicata de Servico
+    TIPO_ESPECIE_DOCUMENTO_NS = 16;  // Nota de Seguro
+    TIPO_ESPECIE_DOCUMENTO_RC = 17;  // Recibo
+    TIPO_ESPECIE_DOCUMENTO_FAT = 18; // Fatura
+    TIPO_ESPECIE_DOCUMENTO_ND = 19;  // Nota de Debito
+    TIPO_ESPECIE_DOCUMENTO_AP = 20;  // Apolice de Seguro
+    TIPO_ESPECIE_DOCUMENTO_ME = 21;  // Mensalidade Escolar
+    TIPO_ESPECIE_DOCUMENTO_PC = 22;  // Parcela de Consorcio
+    TIPO_ESPECIE_DOCUMENTO_NF = 23;  // Nota Fiscal
+    TIPO_ESPECIE_DOCUMENTO_DD = 24;  // Documento de Divida
+    TIPO_ESPECIE_DOCUMENTO_CC = 31;  // Cartao de Credito
+    TIPO_ESPECIE_DOCUMENTO_BDP = 32; // Boleto Proposta
+    TIPO_ESPECIE_DOCUMENTO_OU = 99;  // Outros
+}
+
+// Wallet type
+enum TipoCarteira {
+    TIPO_CARTEIRA_UNSPECIFIED = 0;
+    TIPO_CARTEIRA_COBRANCA_SIMPLES = 1;
+    TIPO_CARTEIRA_COBRANCA_VINCULADA = 2;
+    TIPO_CARTEIRA_COBRANCA_CAUCIONADA = 3;
+    TIPO_CARTEIRA_COBRANCA_DESCONTADA = 4;
+    TIPO_CARTEIRA_COBRANCA_VENDOR = 5;
+    TIPO_CARTEIRA_COBRANCA_DEBITO = 6;
+}
+
+// Interest type
+enum TipoJuros {
+    TIPO_JUROS_UNSPECIFIED = 0;
+    TIPO_JUROS_ISENTO = 1;
+    TIPO_JUROS_SIMPLES = 2;
+    TIPO_JUROS_IDA = 3;
+}
+
+// Penalty type
+enum TipoCodigoMulta {
+    TIPO_CODIGO_MULTA_UNSPECIFIED = 0;
+    TIPO_CODIGO_MULTA_VALOR = 1;
+    TIPO_CODIGO_MULTA_PERCENTUAL = 2;
+    TIPO_CODIGO_MULTA_DISPENSAR = 9;
+}
+
+// Registration form type
+enum TipoFormaCadastramento {
+    TIPO_FORMA_CADASTRAMENTO_UNSPECIFIED = 0;
+    TIPO_FORMA_CADASTRAMENTO_COM_REGISTRO = 1;
+    TIPO_FORMA_CADASTRAMENTO_SEM_REGISTRO = 2;
+    TIPO_FORMA_CADASTRAMENTO_DEBITO_AUTOMATICO = 3;
+}
+
+// Boleto print type
+enum TipoImpressaoBoleto {
+    TIPO_IMPRESSAO_BOLETO_UNSPECIFIED = 0;
+    TIPO_IMPRESSAO_BOLETO_BANCO = 1;
+    TIPO_IMPRESSAO_BOLETO_EMPRESA = 2;
+    TIPO_IMPRESSAO_BOLETO_BANCO_PRE_EMITE = 3;
+    TIPO_IMPRESSAO_BOLETO_BANCO_REEMITE = 4;
+    TIPO_IMPRESSAO_BOLETO_BANCO_NAO_REEMITE = 5;
+    TIPO_IMPRESSAO_BOLETO_BANCO_EMITENTE_ABERTA = 7;
+    TIPO_IMPRESSAO_BOLETO_BANCO_AUTO_ENVELOPAVEL = 8;
+}
+
+// PIX key type
+enum TipoChavePix {
+    TIPO_CHAVE_PIX_UNSPECIFIED = 0;
+    TIPO_CHAVE_PIX_CPF = 1;
+    TIPO_CHAVE_PIX_CNPJ = 2;
+    TIPO_CHAVE_PIX_CELULAR = 3;
+    TIPO_CHAVE_PIX_EMAIL = 4;
+    TIPO_CHAVE_PIX_ALEATORIA = 5;
+}
+
+// Output format for boleto generation
+enum OutputFormat {
+    OUTPUT_FORMAT_UNSPECIFIED = 0;
+    OUTPUT_FORMAT_PDF = 1;
+}

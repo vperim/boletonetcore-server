@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+option csharp_namespace = "BoletoNetCore.Server.Contracts.Generated.V1";
+
+import "google/protobuf/timestamp.proto";
+import "boletonetcore/types/money.proto";
+import "boletonetcore/boletos/v1/enums.proto";
+import "boletonetcore/boletos/v1/pagador.proto";
+
+package boletonetcore.boletos.v1;
+
+// Input data for a single boleto
+message BoletoInput {
+    // Payer information
+    Pagador pagador = 1;
+
+    // Due date
+    google.protobuf.Timestamp data_vencimento = 2;
+
+    // Document value
+    boletonetcore.types.Money valor_titulo = 3;
+
+    // Our number (bank reference)
+    string nosso_numero = 4;
+
+    // Document number
+    string numero_documento = 5;
+
+    // Document species type
+    TipoEspecieDocumento especie_documento = 6;
+
+    // Acceptance: "N", "A", or "S" (default: "N")
+    string aceite = 7;
+
+    // Issue date
+    google.protobuf.Timestamp data_emissao = 8;
+
+    // Processing date
+    google.protobuf.Timestamp data_processamento = 9;
+
+    // Control number (participant)
+    string numero_controle_participante = 10;
+
+    // Interest start date
+    google.protobuf.Timestamp data_juros = 11;
+
+    // Daily interest value
+    boletonetcore.types.Money valor_juros_dia = 12;
+
+    // Daily interest percentage (as string for precision)
+    string percentual_juros_dia = 13;
+
+    // Interest type
+    TipoJuros tipo_juros = 14;
+
+    // Penalty date
+    google.protobuf.Timestamp data_multa = 15;
+
+    // Penalty value
+    boletonetcore.types.Money valor_multa = 16;
+
+    // Penalty percentage (as string for precision)
+    string percentual_multa = 17;
+
+    // Penalty type
+    TipoCodigoMulta tipo_codigo_multa = 18;
+
+    // Discounts (up to 3)
+    repeated Desconto descontos = 19;
+
+    // First instruction code
+    string codigo_instrucao_1 = 20;
+
+    // Second instruction code
+    string codigo_instrucao_2 = 21;
+
+    // Cashier instruction message
+    string mensagem_instrucoes_caixa = 22;
+
+    // Print auxiliary values flag
+    bool imprimir_valores_auxiliares = 23;
+}
+
+// Discount information
+message Desconto {
+    // Discount deadline
+    google.protobuf.Timestamp data = 1;
+
+    // Discount value
+    boletonetcore.types.Money valor = 2;
+}
+
+// Generated boleto output data
+message BoletoGerado {
+    // Our number (as provided)
+    string nosso_numero = 1;
+
+    // Our number check digit
+    string nosso_numero_dv = 2;
+
+    // Formatted our number (bank-specific format)
+    string nosso_numero_formatado = 3;
+
+    // 44-digit barcode
+    string codigo_barras = 4;
+
+    // 47-character digitable line
+    string linha_digitavel = 5;
+
+    // Document number (echo back)
+    string numero_documento = 6;
+}

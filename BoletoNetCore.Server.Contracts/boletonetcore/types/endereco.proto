@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option csharp_namespace = "BoletoNetCore.Server.Contracts.Generated.Types";
+
+package boletonetcore.types;
+
+// Represents a Brazilian address.
+message Endereco {
+    // Street name
+    string logradouro = 1;
+
+    // Street number
+    string numero = 2;
+
+    // Complement (apartment, suite, etc.)
+    string complemento = 3;
+
+    // Neighborhood
+    string bairro = 4;
+
+    // City
+    string cidade = 5;
+
+    // State code (2 chars, e.g., "SP", "RJ")
+    string uf = 6;
+
+    // ZIP code (8 digits, no formatting)
+    string cep = 7;
+}

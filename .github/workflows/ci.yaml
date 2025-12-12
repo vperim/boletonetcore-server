@@ -1,0 +1,336 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - server/main
+    paths:
+      - 'BoletoNetCore/**'
+      - 'BoletoNetCore.QuestPdf/**'
+      - 'BoletoNetCore.Server/**'
+      - 'BoletoNetCore.Server.Contracts/**'
+      - 'BoletoNetCore.Server.Tests/**'
+      - '*.sln'
+      - '.github/workflows/**'
+    tags:
+      # Semver without 'v' prefix: 1.0.0, 1.2.3-beta.1, 2.0.0-rc.1
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+-*'
+  pull_request:
+    branches:
+      - server/main
+    paths:
+      - 'BoletoNetCore/**'
+      - 'BoletoNetCore.QuestPdf/**'
+      - 'BoletoNetCore.Server/**'
+      - 'BoletoNetCore.Server.Contracts/**'
+      - 'BoletoNetCore.Server.Tests/**'
+      - '*.sln'
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/boletonetcore-server
+  NUGET_SOURCE: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+  NUGET_DIRECTORY: ${{ github.workspace }}/nuget
+
+jobs:
+  # =============================================================================
+  # UNIT TESTS
+  # =============================================================================
+  unit-tests:
+    name: Unit Tests
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-
+
+      - name: Restore dependencies
+        run: dotnet restore BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj
+
+      - name: Build
+        run: dotnet build BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj --no-restore -c Release
+
+      - name: Run Unit Tests
+        run: |
+          dotnet test BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj \
+            --no-build \
+            -c Release \
+            --filter "Category!=Integration" \
+            --collect:"XPlat Code Coverage" \
+            --logger "trx;LogFileName=unit-tests.trx" \
+            --results-directory ./TestResults
+
+      - name: Publish coverage summary
+        if: always()
+        run: |
+          echo "## Unit Test Coverage" >> $GITHUB_STEP_SUMMARY
+          COVERAGE_FILE=$(find TestResults -name 'coverage.cobertura.xml' | head -n 1 || true)
+          if [ -n "$COVERAGE_FILE" ]; then
+            echo "Coverage file: $COVERAGE_FILE" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No coverage file found." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unit-test-results
+          path: ./TestResults
+
+  # =============================================================================
+  # INTEGRATION TESTS
+  # =============================================================================
+  integration-tests:
+    name: Integration Tests
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-
+
+      - name: Restore dependencies
+        run: dotnet restore BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj
+
+      - name: Build
+        run: dotnet build BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj --no-restore -c Release
+
+      - name: Run Integration Tests
+        run: |
+          dotnet test BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj \
+            --no-build \
+            -c Release \
+            --filter "Category=Integration" \
+            --collect:"XPlat Code Coverage" \
+            --logger "trx;LogFileName=integration-tests.trx" \
+            --results-directory ./TestResults
+
+      - name: Publish coverage summary
+        if: always()
+        run: |
+          echo "## Integration Test Coverage" >> $GITHUB_STEP_SUMMARY
+          COVERAGE_FILE=$(find TestResults -name 'coverage.cobertura.xml' | head -n 1 || true)
+          if [ -n "$COVERAGE_FILE" ]; then
+            echo "Coverage file: $COVERAGE_FILE" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No coverage file found." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: integration-test-results
+          path: ./TestResults
+
+  # =============================================================================
+  # PUBLISH (only on tag)
+  # =============================================================================
+  publish:
+    name: Publish
+    if: ${{ startsWith(github.ref, 'refs/tags/') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Extract and validate version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+
+          # Validate semver format (MAJOR.MINOR.PATCH[-prerelease])
+          if [[ ! "$VERSION" =~ ^[0-9]+(\.[0-9]+){2}(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Tag '${VERSION}' is not valid semver (MAJOR.MINOR.PATCH[-prerelease])." >&2
+            exit 1
+          fi
+
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-
+
+      # -------------------------------------------------------------------------
+      # Build and Test
+      # -------------------------------------------------------------------------
+      - name: Restore dependencies
+        run: dotnet restore BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj
+
+      - name: Build
+        run: dotnet build BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj --no-restore -c Release
+
+      - name: Run Unit Tests
+        run: |
+          dotnet test BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj \
+            --no-build \
+            -c Release \
+            --filter "Category!=Integration" \
+            --logger "trx;LogFileName=unit-tests.trx" \
+            --results-directory ./TestResults
+
+      - name: Run Integration Tests
+        run: |
+          dotnet test BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj \
+            --no-build \
+            -c Release \
+            --filter "Category=Integration" \
+            --logger "trx;LogFileName=integration-tests.trx" \
+            --results-directory ./TestResults
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ steps.version.outputs.VERSION }}
+          path: ./TestResults
+
+      # -------------------------------------------------------------------------
+      # NuGet Package
+      # -------------------------------------------------------------------------
+      - name: Pack NuGet package
+        run: |
+          mkdir -p ${{ env.NUGET_DIRECTORY }}
+
+          dotnet pack BoletoNetCore.Server.Contracts/BoletoNetCore.Server.Contracts.csproj \
+            -c Release \
+            --no-build \
+            -o ${{ env.NUGET_DIRECTORY }} \
+            -p:PackageVersion=${{ steps.version.outputs.VERSION }} \
+            -p:ContinuousIntegrationBuild=true
+
+      - name: List created packages
+        run: |
+          echo "## NuGet Packages" >> $GITHUB_STEP_SUMMARY
+          echo "Created packages:" >> $GITHUB_STEP_SUMMARY
+          ls -lah ${{ env.NUGET_DIRECTORY }} >> $GITHUB_STEP_SUMMARY
+
+      - name: Push to GitHub Packages
+        run: |
+          dotnet nuget push "${{ env.NUGET_DIRECTORY }}/*.nupkg" \
+            --source ${{ env.NUGET_SOURCE }} \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --skip-duplicate
+
+          dotnet nuget push "${{ env.NUGET_DIRECTORY }}/*.snupkg" \
+            --source ${{ env.NUGET_SOURCE }} \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --skip-duplicate || true
+
+      - name: Upload NuGet artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages-${{ steps.version.outputs.VERSION }}
+          path: ${{ env.NUGET_DIRECTORY }}/*
+          retention-days: 30
+
+      # -------------------------------------------------------------------------
+      # Docker Image
+      # -------------------------------------------------------------------------
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ steps.version.outputs.VERSION }}
+            type=raw,value=latest,enable=${{ !contains(steps.version.outputs.VERSION, '-') }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./BoletoNetCore.Server/Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: mode=max
+          sbom: true
+          build-args: |
+            VERSION=${{ steps.version.outputs.VERSION }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            VCS_REF=${{ github.sha }}
+
+      - name: Publish Docker summary
+        run: |
+          echo "## Docker Image" >> $GITHUB_STEP_SUMMARY
+          echo "Published to: \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.VERSION }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "Platforms: linux/amd64, linux/arm64" >> $GITHUB_STEP_SUMMARY

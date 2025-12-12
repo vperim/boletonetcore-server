@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option csharp_namespace = "BoletoNetCore.Server.Contracts.Generated.V1";
+
+import "boletonetcore/boletos/v1/enums.proto";
+
+package boletonetcore.boletos.v1;
+
+// Bank account information
+message ContaBancaria {
+    // Branch number (4 digits)
+    string agencia = 1;
+
+    // Branch check digit
+    string digito_agencia = 2;
+
+    // Account number
+    string conta = 3;
+
+    // Account check digit
+    string digito_conta = 4;
+
+    // Operation code (bank-specific, e.g., Sicredi)
+    string operacao_conta = 5;
+
+    // Covenant/agreement code
+    string codigo_convenio = 6;
+
+    // Registration form type
+    TipoFormaCadastramento tipo_forma_cadastramento = 7;
+
+    // Boleto print type
+    TipoImpressaoBoleto tipo_impressao_boleto = 8;
+
+    // PIX key
+    string chave_pix = 9;
+
+    // PIX key type
+    TipoChavePix tipo_chave_pix = 10;
+}
