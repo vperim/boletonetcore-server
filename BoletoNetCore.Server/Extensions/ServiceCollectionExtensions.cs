@@ -61,7 +61,7 @@ public static class ServiceCollectionExtensions
                 });
 
             c.OperationFilter<SwaggerVersioningOperationFilter>();
-            c.OperationFilter<SwaggerExampleOperationFilter>();
+            c.OperationFilter<SwaggerDefaultRequestFilter>();
         });
     }
 }
