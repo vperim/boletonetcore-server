@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<LangVersion>preview</LangVersion>
+		<Nullable>enable</Nullable>
+		<!-- NuGet Package Metadata -->
+		<PackageId>BoletoNetCore.Server.Contracts</PackageId>
+		<Title>BoletoNetCore.Server.Contracts</Title>
+		<Authors>Perim</Authors>
+		<Copyright>Copyright (c) 2024-2025 Perim. Baseado em BoletoNetCore © 2019 BoletoNet.</Copyright>
+		<ProjectUrl>https://github.com/vperim/boletonetcore-server</ProjectUrl>
+		<RepositoryUrl>https://github.com/vperim/boletonetcore-server</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Description>Contratos gRPC para BoletoNetCore.Server - API de geração de boletos bancários brasileiros. Baseado em BoletoNetCore.</Description>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<Tags>boleto cnab banco grpc protobuf contracts brasil brazil</Tags>
+		<IsPackable>true</IsPackable>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Grpc.Tools" Version="2.76.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Google.Api.CommonProtos" Version="2.17.0" GeneratePathProperty="true" />
+		<PackageReference Include="Grpc.Core.Api" Version="2.71.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="boletonetcore\**\*.proto" ProtoRoot="." GrpcServices="Both" AdditionalImportDirs="$(PkgGoogle_Api_CommonProtos)\content\protos" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+</Project>

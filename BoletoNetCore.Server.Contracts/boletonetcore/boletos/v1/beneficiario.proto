@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option csharp_namespace = "BoletoNetCore.Server.Contracts.Generated.V1";
+
+import "boletonetcore/types/endereco.proto";
+import "boletonetcore/boletos/v1/conta_bancaria.proto";
+
+package boletonetcore.boletos.v1;
+
+// Beneficiary (payee/creditor) information
+message Beneficiario {
+    // CPF (11 digits) or CNPJ (14 digits) without formatting
+    string cpf_cnpj = 1;
+
+    // Beneficiary name
+    string nome = 2;
+
+    // Beneficiary code (bank-specific)
+    string codigo = 3;
+
+    // Beneficiary code check digit
+    string codigo_dv = 4;
+
+    // Transmission code (bank-specific)
+    string codigo_transmissao = 5;
+
+    // Beneficiary address
+    boletonetcore.types.Endereco endereco = 6;
+
+    // Bank account information
+    ContaBancaria conta_bancaria = 7;
+}
