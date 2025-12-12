@@ -4,7 +4,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BoletoNetCore.Server.Versioning;
 
-public class SwaggerExampleOperationFilter : IOperationFilter
+public class SwaggerDefaultRequestFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
