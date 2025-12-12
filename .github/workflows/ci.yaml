@@ -291,9 +291,6 @@ jobs:
       # -------------------------------------------------------------------------
       # Docker Image
       # -------------------------------------------------------------------------
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -319,7 +316,7 @@ jobs:
           context: .
           file: ./BoletoNetCore.Server/Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -335,4 +332,4 @@ jobs:
         run: |
           echo "## Docker Image" >> $GITHUB_STEP_SUMMARY
           echo "Published to: \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.VERSION }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "Platforms: linux/amd64, linux/arm64" >> $GITHUB_STEP_SUMMARY
+          echo "Platforms: linux/amd64" >> $GITHUB_STEP_SUMMARY
