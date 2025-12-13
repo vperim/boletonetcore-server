@@ -9,47 +9,35 @@ namespace BoletoNetCore.Server.Services.Boletos;
 public sealed class BoletoGenerator : IBoletoGenerator
 {
     private readonly IBancoFactory bancoFactory;
-    private readonly IBoletoMapper mapper;
     private readonly IOutputRendererFactory rendererFactory;
 
     public BoletoGenerator(
         IBancoFactory bancoFactory,
-        IBoletoMapper mapper,
         IOutputRendererFactory rendererFactory)
     {
         this.bancoFactory = bancoFactory;
-        this.mapper = mapper;
         this.rendererFactory = rendererFactory;
     }
 
     public GenerationResult Generate(GerarBoletoRequest request)
     {
-        // 1. Map conta bancária from request
-        var contaBancaria = this.mapper.MapContaBancaria(request);
+        var banco = this.bancoFactory.Create(request.Banco.Codigo);
+        banco.Beneficiario ??= new Beneficiario();
+        BoletoMapper.MapBancoBeneficiario(request.Banco.Beneficiario, banco.Beneficiario);
+        banco.FormataBeneficiario();
 
-        // 2. Map beneficiário
-        var beneficiario = this.mapper.MapBeneficiario(request.Beneficiario, contaBancaria);
-
-        // 3. Create fresh bank instance (stateless, no concurrency issues)
-        var banco = this.bancoFactory.Create(request.BancoCodigo, beneficiario);
-
-        // 4. Create boletos collection
         var boletos = new BoletoNetCore.Boletos { Banco = banco };
 
         foreach (var input in request.Boletos)
         {
-            // Use constructor that ignores carteira from banco.Beneficiario.ContaBancaria
-            var boleto = new Boleto(banco, ignorarCarteira: true)
-            {
-                Carteira = request.Carteira,
-                VariacaoCarteira = request.VariacaoCarteira,
-                TipoCarteira = this.mapper.MapTipoCarteira(request.TipoCarteira),
-            };
+            var boleto = new Boleto(banco);
 
-            this.mapper.MapBoleto(input, boleto);
+            BoletoMapper.MapBoleto(input, boleto);
 
+            // Skip validation when CodigoBarra is provided directly (reconstruction scenario)
             // Library handles: NossoNumeroFormatado, CodigoBarra, LinhaDigitavel
-            boleto.ValidarDados();
+            if (input.CodigoBarra == null)
+                boleto.ValidarDados();
 
             boletos.Add(boleto);
         }
@@ -63,7 +51,7 @@ public sealed class BoletoGenerator : IBoletoGenerator
         {
             Content = content,
             ContentType = renderer.ContentType,
-            Boletos = boletos.Select(this.mapper.MapToResponse).ToList(),
+            Boletos = boletos.Select(BoletoMapper.MapToResponse).ToList(),
         };
     }
 

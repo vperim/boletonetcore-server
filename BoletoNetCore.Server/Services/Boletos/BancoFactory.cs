@@ -28,7 +28,7 @@ public sealed class BancoFactory : IBancoFactory
         [756] = () => new BancoSicoob(),
     };
 
-    public IBanco Create(int codigoBanco, Beneficiario beneficiario)
+    public IBanco Create(int codigoBanco)
     {
         if (!Factories.TryGetValue(codigoBanco, out var factory))
         {
@@ -36,9 +36,7 @@ public sealed class BancoFactory : IBancoFactory
         }
 
         var banco = factory();
-        banco.Beneficiario = beneficiario;
-        banco.FormataBeneficiario();
-
+        banco.Beneficiario ??= new Beneficiario();
         return banco;
     }
 }

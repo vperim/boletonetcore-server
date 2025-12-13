@@ -7,26 +7,38 @@ import "boletonetcore/boletos/v1/conta_bancaria.proto";
 
 package boletonetcore.boletos.v1;
 
-// Beneficiary (payee/creditor) information
+// Dados do beneficiário (cedente/credor) - empresa ou pessoa que emite o boleto e receberá o pagamento.
 message Beneficiario {
-    // CPF (11 digits) or CNPJ (14 digits) without formatting
+    // CPF (11 dígitos) ou CNPJ (14 dígitos) sem formatação.
+    // O sistema remove automaticamente pontos, hífens e barras.
     string cpf_cnpj = 1;
 
-    // Beneficiary name
+    // Nome ou razão social do beneficiário.
     string nome = 2;
 
-    // Beneficiary code (bank-specific)
+    // Código do beneficiário no banco (identificador CNPJ no banco).
+    // Formato varia conforme o banco.
     string codigo = 3;
 
-    // Beneficiary code check digit
+    // Dígito verificador do código do beneficiário.
     string codigo_dv = 4;
 
-    // Transmission code (bank-specific)
+    // Código de transmissão usado na troca de arquivos CNAB com o banco.
     string codigo_transmissao = 5;
 
-    // Beneficiary address
+    // Endereço do beneficiário.
     boletonetcore.types.Endereco endereco = 6;
 
-    // Bank account information
+    // Dados da conta bancária do beneficiário.
     ContaBancaria conta_bancaria = 7;
+
+    // Código do beneficiário formatado para exibição.
+    string codigo_formatado = 8;
+
+    // Observações adicionais sobre o beneficiário.
+    string observacoes = 9;
+
+    // Indica se o CNPJ deve ser exibido no boleto impresso.
+    // Padrão: true.
+    bool mostrar_cnpj_no_boleto = 10;
 }

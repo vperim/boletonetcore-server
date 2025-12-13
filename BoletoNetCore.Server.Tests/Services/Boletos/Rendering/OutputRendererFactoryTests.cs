@@ -1,3 +1,4 @@
+using BoletoNetCore;
 using BoletoNetCore.Server.Contracts.Generated.V1;
 using BoletoNetCore.Server.Services.Boletos.Rendering;
 

@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BoletoNetCore.Server\BoletoNetCore.Server.csproj" />
     <ProjectReference Include="..\BoletoNetCore.Server.Contracts\BoletoNetCore.Server.Contracts.csproj" />
+    <ProjectReference Include="..\BoletoNetCore\BoletoNetCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

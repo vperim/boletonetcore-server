@@ -310,3 +310,8 @@ reportoutput/
 #Ignore MacOS Files
 .DS_Store
 /.obsidian
+
+# Environment files (may contain secrets)
+.env
+.env.*
+!.env.example

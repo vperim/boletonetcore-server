@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using BoletoNetCore.Server.Contracts.Generated.Types;
 using BoletoNetCore.Server.Contracts.Generated.V1;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
 
 Console.WriteLine("=== BoletoNetCore - Exemplo de Cliente gRPC ===");
@@ -34,7 +35,7 @@ try
     // Montar requisição com banco Sicredi (748) - mesmo do exemplo QuestPDF
     var request = CreateGerarBoletoRequest();
 
-    Console.WriteLine($"Gerando {request.Boletos.Count} boletos para o banco {request.BancoCodigo} (Sicredi)...");
+    Console.WriteLine($"Gerando {request.Boletos.Count} boletos para o banco {request.Banco.Codigo} (Sicredi)...");
     Console.WriteLine();
 
     // Chamar serviço gRPC com medição de tempo
@@ -86,85 +87,143 @@ return;
 static GerarBoletoRequest CreateGerarBoletoRequest()
 {
     // Banco Sicredi (748) - mesmo do exemplo QuestPDF
-    return GerarBoletoRequest.Builder(bancoCodigo: 748)
-        .ComCarteira("1", TipoCarteira.CobrancaSimples, variacao: "A")
-        .ComBeneficiario(Beneficiario.CriarValido(
-            cpfCnpj: "86875666000109",
-            nome: "Beneficiario Teste",
-            contaBancaria: ContaBancaria.CriarValido(
-                agencia: "0156",
-                conta: "85305",
-                tipoFormaCadastramento: TipoFormaCadastramento.ComRegistro,
-                tipoImpressaoBoleto: TipoImpressaoBoleto.Empresa,
-                digitoConta: "4",
-                operacaoConta: "05"),
-            codigo: "85305",
-            endereco: Endereco.CriarValido(
-                logradouro: "Rua Teste do Beneficiário",
-                numero: "789",
-                bairro: "Bairro",
-                cidade: "Cidade",
-                uf: "SP",
-                cep: "65432987",
-                complemento: "Cj 333")))
-        .ComBoleto(
-            CreateBoletoInput(1),
-            CreateBoletoInput(2),
-            CreateBoletoInput(3),
-            CreateBoletoInput(4))
-        .Build();
+    var request = new GerarBoletoRequest
+    {
+        Banco = new Banco
+        {
+            Codigo = 748,
+            Beneficiario = new Beneficiario
+            {
+                CpfCnpj = "86875666000109",
+                Nome = "Beneficiario Teste",
+                Codigo = "85305",
+                ContaBancaria = new ContaBancaria
+                {
+                    Agencia = "0156",
+                    Conta = "85305",
+                    DigitoConta = "4",
+                    OperacaoConta = "05",
+                    TipoFormaCadastramento = TipoFormaCadastramento.ComRegistro,
+                    TipoImpressaoBoleto = TipoImpressaoBoleto.Empresa,
+                },
+                Endereco = new Endereco
+                {
+                    LogradouroEndereco = "Rua Teste do Beneficiário",
+                    LogradouroNumero = "789",
+                    LogradouroComplemento = "Cj 333",
+                    Bairro = "Bairro",
+                    Cidade = "Cidade",
+                    Uf = "SP",
+                    Cep = "65432987",
+                },
+            },
+        },
+        OutputFormat = OutputFormat.Pdf,
+    };
+
+    request.Boletos.Add(CreateBoletoInput(1));
+    request.Boletos.Add(CreateBoletoInput(2));
+    request.Boletos.Add(CreateBoletoInput(3));
+    request.Boletos.Add(CreateBoletoInput(4));
+
+    return request;
 }
 
-static BoletoInput CreateBoletoInput(int index)
+static Boleto CreateBoletoInput(int index)
 {
     var isOdd = index % 2 == 1;
     var baseDate = DateTime.Today;
     var vencimento = baseDate.AddMonths(index);
 
-    var pagador = CreatePagador(isOdd);
+    var boleto = new Boleto
+    {
+        // Carteira
+        Carteira = "1",
+        VariacaoCarteira = "A",
+        TipoCarteira = TipoCarteira.CarteiraCobrancaSimples,
 
-    return BoletoInput.Builder()
-        .ComPagador(pagador)
-        .ComVencimento(vencimento)
-        .ComValor(100m * index)
-        .ComNossoNumero($"{index:00000000}")
-        .ComDocumento($"BB{index:000}{(char)('A' + index - 1)}", TipoEspecieDocumento.Dm)
-        .ComAceite(isOdd ? "N" : "A")
-        .ComDataEmissao(baseDate.AddDays(-3))
-        .ComDataProcessamento(baseDate)
-        .ComInstrucoes("11", "22")
-        .ComMultaPercentual(vencimento.AddDays(1), 2m)
-        .ComJurosPercentual(vencimento.AddDays(1), 0.2m)
-        .ComDesconto(vencimento.AddDays(-10), (100m * index) / 10)
-        .ComDesconto(vencimento.AddDays(-5), (100m * index) * 12 / 100)
-        .ComDesconto(vencimento.AddDays(-2), (100m * index) * 13 / 100)
-        .Build();
+        // Pagador
+        Pagador = CreatePagador(isOdd),
+
+        // Datas
+        DataVencimento = Timestamp.FromDateTime(vencimento.ToUniversalTime()),
+        DataEmissao = Timestamp.FromDateTime(baseDate.AddDays(-3).ToUniversalTime()),
+        DataProcessamento = Timestamp.FromDateTime(baseDate.ToUniversalTime()),
+
+        // Valores e identificação
+        ValorTitulo = 100m * index,
+        NossoNumero = $"{index:00000000}",
+        NumeroDocumento = $"BB{index:000}{(char)('A' + index - 1)}",
+        EspecieDocumento = TipoEspecieDocumento.Dm,
+        Aceite = isOdd ? "N" : "A",
+
+        // Instruções
+        CodigoInstrucao1 = "11",
+        CodigoInstrucao2 = "22",
+
+        // Multa
+        DataMulta = Timestamp.FromDateTime(vencimento.AddDays(1).ToUniversalTime()),
+        PercentualMulta = "2",
+        TipoCodigoMulta = TipoCodigoMulta.Percentual,
+
+        // Juros
+        DataJuros = Timestamp.FromDateTime(vencimento.AddDays(1).ToUniversalTime()),
+        PercentualJurosDia = "0.2",
+        TipoJuros = TipoJuros.Simples,
+    };
+
+    // Descontos
+    boleto.Descontos.Add(new Desconto
+    {
+        Data = Timestamp.FromDateTime(vencimento.AddDays(-10).ToUniversalTime()),
+        Valor = (100m * index) / 10,
+    });
+    boleto.Descontos.Add(new Desconto
+    {
+        Data = Timestamp.FromDateTime(vencimento.AddDays(-5).ToUniversalTime()),
+        Valor = (100m * index) * 12 / 100,
+    });
+    boleto.Descontos.Add(new Desconto
+    {
+        Data = Timestamp.FromDateTime(vencimento.AddDays(-2).ToUniversalTime()),
+        Valor = (100m * index) * 13 / 100,
+    });
+
+    return boleto;
 }
 
 static Pagador CreatePagador(bool isCompany)
 {
     if (isCompany)
     {
-        return Pagador.CriarValido(
-            cpfCnpj: "71738978000101",
-            nome: "Pagador Teste PJ",
-            endereco: Endereco.CriarValido(
-                logradouro: "Avenida Testando",
-                numero: "123",
-                bairro: "Bairro PJ",
-                cidade: "Cidade PJ",
-                uf: "RJ",
-                cep: "12345678"));
+        return new Pagador
+        {
+            CpfCnpj = "71738978000101",
+            Nome = "Pagador Teste PJ",
+            Endereco = new Endereco
+            {
+                LogradouroEndereco = "Avenida Testando",
+                LogradouroNumero = "123",
+                Bairro = "Bairro PJ",
+                Cidade = "Cidade PJ",
+                Uf = "RJ",
+                Cep = "12345678",
+            },
+        };
     }
 
-    return Pagador.CriarValido(
-        cpfCnpj: "44331610128",
-        nome: "Pagador Teste PF",
-        endereco: Endereco.CriarValido(
-            logradouro: "Rua Testando",
-            numero: "456",
-            bairro: "Bairro PF",
-            cidade: "Cidade PF",
-            uf: "MG",
-            cep: "87654321"));
+    return new Pagador
+    {
+        CpfCnpj = "44331610128",
+        Nome = "Pagador Teste PF",
+        Endereco = new Endereco
+        {
+            LogradouroEndereco = "Rua Testando",
+            LogradouroNumero = "456",
+            Bairro = "Bairro PF",
+            Cidade = "Cidade PF",
+            Uf = "MG",
+            Cep = "87654321",
+        },
+    };
 }

@@ -24,8 +24,8 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\BoletoNetCore.Server.Contracts\BoletoNetCore.Server.Contracts.csproj" />
-		<ProjectReference Include="..\BoletoNetCore\BoletoNetCore.csproj" />
-		<ProjectReference Include="..\BoletoNetCore.QuestPdf\BoletoNetCore.QuestPdf.csproj" />
+		<ProjectReference Include="..\BoletoNetCore\BoletoNetCore.csproj" PrivateAssets="all" />
+		<ProjectReference Include="..\BoletoNetCore.QuestPdf\BoletoNetCore.QuestPdf.csproj" PrivateAssets="all" />
 	</ItemGroup>
 
 </Project>

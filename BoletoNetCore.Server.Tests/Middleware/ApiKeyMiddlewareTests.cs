@@ -1,7 +1,7 @@
 using System.Net;
 using BoletoNetCore.Server.Configuration;
-using BoletoNetCore.Server.Contracts.Generated.V1;
 using Grpc.Core;
+using ProtoV1 = BoletoNetCore.Server.Contracts.Generated.V1;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -157,8 +157,8 @@ public sealed class ApiKeyMiddlewareTests : IAsyncLifetime
     public async Task GrpcEndpoint_WithoutApiKey_ReturnsUnauthenticated()
     {
         // Arrange
-        var client = new BoletoV1.BoletoV1Client(this.grpcChannel);
-        var request = new GerarBoletoRequest { BancoCodigo = 237 };
+        var client = new ProtoV1.BoletoV1.BoletoV1Client(this.grpcChannel);
+        var request = new ProtoV1.GerarBoletoRequest { Banco = new ProtoV1.Banco { Codigo = 237 } };
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<RpcException>(
@@ -175,8 +175,8 @@ public sealed class ApiKeyMiddlewareTests : IAsyncLifetime
         {
             { ApiKeyOptions.HeaderName, "invalid-key" }
         };
-        var client = new BoletoV1.BoletoV1Client(this.grpcChannel);
-        var request = new GerarBoletoRequest { BancoCodigo = 237 };
+        var client = new ProtoV1.BoletoV1.BoletoV1Client(this.grpcChannel);
+        var request = new ProtoV1.GerarBoletoRequest { Banco = new ProtoV1.Banco { Codigo = 237 } };
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<RpcException>(
@@ -193,10 +193,10 @@ public sealed class ApiKeyMiddlewareTests : IAsyncLifetime
         {
             { ApiKeyOptions.HeaderName, ValidApiKey }
         };
-        var client = new BoletoV1.BoletoV1Client(this.grpcChannel);
+        var client = new ProtoV1.BoletoV1.BoletoV1Client(this.grpcChannel);
 
         // Minimal request - will fail validation but should pass auth
-        var request = new GerarBoletoRequest { BancoCodigo = 237 };
+        var request = new ProtoV1.GerarBoletoRequest { Banco = new ProtoV1.Banco { Codigo = 237 } };
 
         // Act & Assert - Should NOT throw Unauthenticated; may throw InvalidArgument due to validation
         var exception = await Assert.ThrowsAsync<RpcException>(

@@ -4,50 +4,39 @@ option csharp_namespace = "BoletoNetCore.Server.Contracts.Generated.V1";
 
 import "google/api/annotations.proto";
 import "boletonetcore/boletos/v1/enums.proto";
+import "boletonetcore/boletos/v1/banco.proto";
 import "boletonetcore/boletos/v1/beneficiario.proto";
 import "boletonetcore/boletos/v1/boleto.proto";
 
 package boletonetcore.boletos.v1;
 
-// Request to generate boletos
+// Requisição para gerar boletos.
 message GerarBoletoRequest {
-    // Bank code (001, 033, 237, 341, etc.)
-    int32 banco_codigo = 1;
+    // Configuração do banco com dados do beneficiário.
+    Banco banco = 1;
 
-    // Wallet code ("109", "1", etc.)
-    string carteira = 2;
+    // Lista de boletos a serem gerados.
+    repeated Boleto boletos = 2;
 
-    // Wallet variation (optional)
-    string variacao_carteira = 3;
-
-    // Wallet type
-    TipoCarteira tipo_carteira = 4;
-
-    // Beneficiary information
-    Beneficiario beneficiario = 5;
-
-    // Boletos to generate
-    repeated BoletoInput boletos = 6;
-
-    // Output format
-    OutputFormat output_format = 7;
+    // Formato de saída desejado.
+    OutputFormat output_format = 3;
 }
 
-// Response with generated boletos
+// Resposta com os boletos gerados.
 message GerarBoletoResponse {
-    // Output content (PDF bytes, etc.)
+    // Conteúdo do arquivo gerado (bytes do PDF, etc).
     bytes conteudo = 1;
 
-    // MIME type (e.g., "application/pdf")
+    // Tipo MIME do conteúdo (ex: "application/pdf").
     string content_type = 2;
 
-    // Generated boleto metadata
+    // Metadados dos boletos gerados.
     repeated BoletoGerado boletos = 3;
 }
 
-// Boleto generation service
+// Serviço de geração de boletos bancários.
 service BoletoV1 {
-    // Generate boletos with PDF output
+    // Gera boletos com saída em PDF.
     rpc GerarBoleto(GerarBoletoRequest) returns (GerarBoletoResponse) {
         option (google.api.http) = {
             post: "/api/v1/boletos"

@@ -3,7 +3,7 @@ using Grpc.Net.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 
-namespace BoletoNetCore.Server.Tests.Fixtures;
+namespace BoletoNetCore.Server.IntegrationTests.Fixtures;
 
 public sealed class BoletoGrpcTestFixture : IAsyncLifetime
 {

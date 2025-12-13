@@ -160,7 +160,7 @@ public static class InfrastructureExtensions
 
         if (settings.Enabled)
         {
-            app.UseGrpcWeb();
+            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
 
             if (settings.EnableCors)
             {

@@ -9,10 +9,10 @@ namespace BoletoNetCore.Server.Services.Boletos;
 public interface IBancoFactory
 {
     /// <summary>
-    /// Creates a fresh bank instance with the specified beneficiary.
+    /// Creates a fresh bank instance without beneficiary.
+    /// Beneficiary should be assigned separately via SetBeneficiario.
     /// </summary>
     /// <param name="codigoBanco">Bank code (001, 033, 237, 341, etc.)</param>
-    /// <param name="beneficiario">Beneficiary to assign to the bank instance</param>
-    /// <returns>Configured bank instance</returns>
-    IBanco Create(int codigoBanco, Beneficiario beneficiario);
+    /// <returns>Bank instance without beneficiary configured</returns>
+    IBanco Create(int codigoBanco);
 }
