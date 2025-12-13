@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option csharp_namespace = "BoletoNetCore.Server.Contracts.Generated.V1";
+
+import "boletonetcore/boletos/v1/beneficiario.proto";
+
+package boletonetcore.boletos.v1;
+
+// Configuração do banco para geração de boletos.
+message Banco {
+    // Código do banco (001=BB, 033=Santander, 237=Bradesco, 341=Itaú, 748=Sicredi, etc.)
+    int32 codigo = 1;
+
+    // Dados do beneficiário (cedente) vinculado a este banco.
+    Beneficiario beneficiario = 2;
+}

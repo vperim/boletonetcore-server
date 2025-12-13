@@ -17,7 +17,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection ConfigureBoletoServices(this IServiceCollection services)
     {
         services.AddScoped<IBancoFactory, BancoFactory>();
-        services.AddScoped<IBoletoMapper, BoletoMapper>();
         services.AddScoped<IBoletoGenerator, BoletoGenerator>();
         services.AddScoped<IBoletoOutputRenderer, PdfBoletoRenderer>();
         services.AddScoped<IOutputRendererFactory, OutputRendererFactory>();

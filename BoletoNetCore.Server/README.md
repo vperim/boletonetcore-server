@@ -234,7 +234,7 @@ service {Domínio}V1 {
 
 Localizados em `boletonetcore/types/`. Importe conforme necessário.
 
-**Money** (`types/money.proto`): Moeda ISO 4217 com precisão nano.
+**Money** (`types/money.proto`): Valor monetário em reais com precisão nano.
 ```protobuf
 import "boletonetcore/types/money.proto";
 

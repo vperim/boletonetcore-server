@@ -6,20 +6,22 @@ import "boletonetcore/types/endereco.proto";
 
 package boletonetcore.boletos.v1;
 
-// Payer (debtor) information
+// Dados do pagador (sacado/devedor) - pessoa física ou jurídica que deve pagar o boleto.
 message Pagador {
-    // CPF (11 digits) or CNPJ (14 digits) without formatting
+    // CPF (11 dígitos) ou CNPJ (14 dígitos) sem formatação.
+    // O sistema remove automaticamente pontos, hífens e barras.
     string cpf_cnpj = 1;
 
-    // Payer name
+    // Nome completo ou razão social do pagador.
     string nome = 2;
 
-    // Payer address
+    // Endereço do pagador.
     boletonetcore.types.Endereco endereco = 3;
 
-    // Phone number (required for some banks like Sicredi)
+    // Telefone do pagador.
+    // Obrigatório para alguns bancos (ex: Sicredi) quando o código do pagador não é informado.
     string telefone = 4;
 
-    // Observations
+    // Observações adicionais (ex: matrícula do funcionário).
     string observacoes = 5;
 }

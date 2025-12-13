@@ -4,97 +4,146 @@ option csharp_namespace = "BoletoNetCore.Server.Contracts.Generated.V1";
 
 package boletonetcore.boletos.v1;
 
-// Document species type
+// Espécie do documento - tipo de título de crédito.
 enum TipoEspecieDocumento {
-    TIPO_ESPECIE_DOCUMENTO_UNSPECIFIED = 0;
+    TIPO_ESPECIE_DOCUMENTO_UNSPECIFIED = 0;  // Não definido
     TIPO_ESPECIE_DOCUMENTO_CH = 1;   // Cheque
     TIPO_ESPECIE_DOCUMENTO_DM = 2;   // Duplicata Mercantil
-    TIPO_ESPECIE_DOCUMENTO_DMI = 3;  // Duplicata Mercantil Indicacao
-    TIPO_ESPECIE_DOCUMENTO_DS = 4;   // Duplicata de Servico
-    TIPO_ESPECIE_DOCUMENTO_DSI = 5;  // Duplicata de Servico Indicacao
+    TIPO_ESPECIE_DOCUMENTO_DMI = 3;  // Duplicata Mercantil por Indicação
+    TIPO_ESPECIE_DOCUMENTO_DS = 4;   // Duplicata de Serviço
+    TIPO_ESPECIE_DOCUMENTO_DSI = 5;  // Duplicata de Serviço por Indicação
     TIPO_ESPECIE_DOCUMENTO_DR = 6;   // Duplicata Rural
-    TIPO_ESPECIE_DOCUMENTO_LC = 7;   // Letra de Cambio
-    TIPO_ESPECIE_DOCUMENTO_NCC = 8;  // Nota de Credito Comercial
-    TIPO_ESPECIE_DOCUMENTO_NCE = 9;  // Nota de Credito Exportacao
-    TIPO_ESPECIE_DOCUMENTO_NCI = 10; // Nota de Credito Industrial
-    TIPO_ESPECIE_DOCUMENTO_NCR = 11; // Nota de Credito Rural
-    TIPO_ESPECIE_DOCUMENTO_NP = 12;  // Nota Promissoria
-    TIPO_ESPECIE_DOCUMENTO_NPR = 13; // Nota Promissoria Rural
+    TIPO_ESPECIE_DOCUMENTO_LC = 7;   // Letra de Câmbio
+    TIPO_ESPECIE_DOCUMENTO_NCC = 8;  // Nota de Crédito Comercial
+    TIPO_ESPECIE_DOCUMENTO_NCE = 9;  // Nota de Crédito à Exportação
+    TIPO_ESPECIE_DOCUMENTO_NCI = 10; // Nota de Crédito Industrial
+    TIPO_ESPECIE_DOCUMENTO_NCR = 11; // Nota de Crédito Rural
+    TIPO_ESPECIE_DOCUMENTO_NP = 12;  // Nota Promissória
+    TIPO_ESPECIE_DOCUMENTO_NPR = 13; // Nota Promissória Rural
     TIPO_ESPECIE_DOCUMENTO_TM = 14;  // Triplicata Mercantil
-    TIPO_ESPECIE_DOCUMENTO_TS = 15;  // Triplicata de Servico
+    TIPO_ESPECIE_DOCUMENTO_TS = 15;  // Triplicata de Serviço
     TIPO_ESPECIE_DOCUMENTO_NS = 16;  // Nota de Seguro
     TIPO_ESPECIE_DOCUMENTO_RC = 17;  // Recibo
     TIPO_ESPECIE_DOCUMENTO_FAT = 18; // Fatura
-    TIPO_ESPECIE_DOCUMENTO_ND = 19;  // Nota de Debito
-    TIPO_ESPECIE_DOCUMENTO_AP = 20;  // Apolice de Seguro
+    TIPO_ESPECIE_DOCUMENTO_ND = 19;  // Nota de Débito
+    TIPO_ESPECIE_DOCUMENTO_AP = 20;  // Apólice de Seguro
     TIPO_ESPECIE_DOCUMENTO_ME = 21;  // Mensalidade Escolar
-    TIPO_ESPECIE_DOCUMENTO_PC = 22;  // Parcela de Consorcio
+    TIPO_ESPECIE_DOCUMENTO_PC = 22;  // Parcela de Consórcio
     TIPO_ESPECIE_DOCUMENTO_NF = 23;  // Nota Fiscal
-    TIPO_ESPECIE_DOCUMENTO_DD = 24;  // Documento de Divida
-    TIPO_ESPECIE_DOCUMENTO_CC = 31;  // Cartao de Credito
-    TIPO_ESPECIE_DOCUMENTO_BDP = 32; // Boleto Proposta
+    TIPO_ESPECIE_DOCUMENTO_DD = 24;  // Documento de Dívida
+    TIPO_ESPECIE_DOCUMENTO_CPR = 25; // Cédula de Produto Rural
+    TIPO_ESPECIE_DOCUMENTO_WAR = 26; // Warrant
+    TIPO_ESPECIE_DOCUMENTO_DAE = 27; // Dívida Ativa Estado
+    TIPO_ESPECIE_DOCUMENTO_DAM = 28; // Dívida Ativa Município
+    TIPO_ESPECIE_DOCUMENTO_DAU = 29; // Dívida Ativa União
+    TIPO_ESPECIE_DOCUMENTO_EC = 30;  // Encargos Condominiais
+    TIPO_ESPECIE_DOCUMENTO_CC = 31;  // Cartão de Crédito
+    TIPO_ESPECIE_DOCUMENTO_BP = 32;  // Boleto Proposta
+    TIPO_ESPECIE_DOCUMENTO_DV = 33;  // Diversos
     TIPO_ESPECIE_DOCUMENTO_OU = 99;  // Outros
 }
 
-// Wallet type
+// Tipo de carteira - define a modalidade de cobrança.
 enum TipoCarteira {
     TIPO_CARTEIRA_UNSPECIFIED = 0;
-    TIPO_CARTEIRA_COBRANCA_SIMPLES = 1;
-    TIPO_CARTEIRA_COBRANCA_VINCULADA = 2;
-    TIPO_CARTEIRA_COBRANCA_CAUCIONADA = 3;
-    TIPO_CARTEIRA_COBRANCA_DESCONTADA = 4;
-    TIPO_CARTEIRA_COBRANCA_VENDOR = 5;
-    TIPO_CARTEIRA_COBRANCA_DEBITO = 6;
+    TIPO_CARTEIRA_CARTEIRA_COBRANCA_SIMPLES = 1;     // Cobrança Simples (padrão)
+    TIPO_CARTEIRA_CARTEIRA_COBRANCA_VINCULADA = 2;   // Cobrança Vinculada (com garantia)
+    TIPO_CARTEIRA_CARTEIRA_COBRANCA_CAUCIONADA = 3;  // Cobrança Caucionada
+    TIPO_CARTEIRA_CARTEIRA_COBRANCA_DESCONTADA = 4;  // Cobrança Descontada
+    TIPO_CARTEIRA_CARTEIRA_COBRANCA_VENDOR = 5;      // Cobrança Vendor
+    TIPO_CARTEIRA_CARTEIRA_COBRANCA_DEBITO = 6;      // Cobrança por Débito
 }
 
-// Interest type
+// Tipo de juros - define como os juros são calculados.
 enum TipoJuros {
-    TIPO_JUROS_UNSPECIFIED = 0;
-    TIPO_JUROS_ISENTO = 1;
-    TIPO_JUROS_SIMPLES = 2;
-    TIPO_JUROS_IDA = 3;
+    TIPO_JUROS_ISENTO = 0;   // Isento de juros
+    TIPO_JUROS_SIMPLES = 1;  // Juros simples (valor ou percentual por dia)
+    TIPO_JUROS_UNSPECIFIED = 2; // Reservado
+    TIPO_JUROS_IDA = 3;      // Juros por dia de atraso
 }
 
-// Penalty type
+// Tipo de multa - define como a multa é calculada.
 enum TipoCodigoMulta {
     TIPO_CODIGO_MULTA_UNSPECIFIED = 0;
-    TIPO_CODIGO_MULTA_VALOR = 1;
-    TIPO_CODIGO_MULTA_PERCENTUAL = 2;
-    TIPO_CODIGO_MULTA_DISPENSAR = 9;
+    TIPO_CODIGO_MULTA_VALOR = 1;                    // Multa por valor fixo
+    TIPO_CODIGO_MULTA_PERCENTUAL = 2;               // Multa por percentual
+    TIPO_CODIGO_MULTA_DISPENSAR_COBRANCA_MULTA = 9; // Dispensar cobrança de multa
 }
 
-// Registration form type
+// Forma de cadastramento - define o tipo de registro do boleto no banco.
 enum TipoFormaCadastramento {
     TIPO_FORMA_CADASTRAMENTO_UNSPECIFIED = 0;
-    TIPO_FORMA_CADASTRAMENTO_COM_REGISTRO = 1;
-    TIPO_FORMA_CADASTRAMENTO_SEM_REGISTRO = 2;
-    TIPO_FORMA_CADASTRAMENTO_DEBITO_AUTOMATICO = 3;
+    TIPO_FORMA_CADASTRAMENTO_COM_REGISTRO = 1;      // Com registro (boleto registrado)
+    TIPO_FORMA_CADASTRAMENTO_SEM_REGISTRO = 2;      // Sem registro
+    TIPO_FORMA_CADASTRAMENTO_DEBITO_AUTOMATICO = 3; // Débito automático
 }
 
-// Boleto print type
+// Tipo de impressão do boleto - define quem imprime o boleto.
 enum TipoImpressaoBoleto {
     TIPO_IMPRESSAO_BOLETO_UNSPECIFIED = 0;
-    TIPO_IMPRESSAO_BOLETO_BANCO = 1;
-    TIPO_IMPRESSAO_BOLETO_EMPRESA = 2;
-    TIPO_IMPRESSAO_BOLETO_BANCO_PRE_EMITE = 3;
-    TIPO_IMPRESSAO_BOLETO_BANCO_REEMITE = 4;
-    TIPO_IMPRESSAO_BOLETO_BANCO_NAO_REEMITE = 5;
-    TIPO_IMPRESSAO_BOLETO_BANCO_EMITENTE_ABERTA = 7;
-    TIPO_IMPRESSAO_BOLETO_BANCO_AUTO_ENVELOPAVEL = 8;
+    TIPO_IMPRESSAO_BOLETO_BANCO = 1;                                // Banco imprime
+    TIPO_IMPRESSAO_BOLETO_EMPRESA = 2;                              // Empresa imprime
+    TIPO_IMPRESSAO_BOLETO_BANCO_PRE_EMITE_CLIENTE_COMPLEMENTA = 3;  // Banco pré-emite, cliente complementa
+    TIPO_IMPRESSAO_BOLETO_BANCO_REEMITE = 4;                        // Banco reemite
+    TIPO_IMPRESSAO_BOLETO_BANCO_NAO_REEMITE = 5;                    // Banco não reemite
+    TIPO_IMPRESSAO_BOLETO_BANCO_EMITENTE_ABERTA = 7;                // Emissão aberta pelo banco
+    TIPO_IMPRESSAO_BOLETO_BANCO_EMITENTE_AUTO_ENVOLOPAVEL = 8;      // Banco emite auto-envelopável
 }
 
-// PIX key type
+// Tipo de chave PIX.
 enum TipoChavePix {
     TIPO_CHAVE_PIX_UNSPECIFIED = 0;
-    TIPO_CHAVE_PIX_CPF = 1;
-    TIPO_CHAVE_PIX_CNPJ = 2;
-    TIPO_CHAVE_PIX_CELULAR = 3;
-    TIPO_CHAVE_PIX_EMAIL = 4;
-    TIPO_CHAVE_PIX_ALEATORIA = 5;
+    TIPO_CHAVE_PIX_CPF = 1;       // CPF (pessoa física)
+    TIPO_CHAVE_PIX_CNPJ = 2;      // CNPJ (pessoa jurídica)
+    TIPO_CHAVE_PIX_CELULAR = 3;   // Número de celular
+    TIPO_CHAVE_PIX_EMAIL = 4;     // Endereço de e-mail
+    TIPO_CHAVE_PIX_ALEATORIA = 5; // Chave aleatória gerada pelo banco
 }
 
-// Output format for boleto generation
+// Formato de saída para geração do boleto.
 enum OutputFormat {
     OUTPUT_FORMAT_UNSPECIFIED = 0;
-    OUTPUT_FORMAT_PDF = 1;
+    OUTPUT_FORMAT_PDF = 1; // PDF
+}
+
+// Tipo de documento - tradicional ou escritural.
+enum TipoDocumento {
+    TIPO_DOCUMENTO_UNSPECIFIED = 0;
+    TIPO_DOCUMENTO_TRADICIONAL = 1; // Tradicional (papel)
+    TIPO_DOCUMENTO_ESCRITURAL = 2;  // Escritural (eletrônico)
+}
+
+// Tipo de distribuição do boleto - define como o boleto é entregue ao pagador.
+enum TipoDistribuicaoBoleto {
+    TIPO_DISTRIBUICAO_BOLETO_UNSPECIFIED = 0;
+    TIPO_DISTRIBUICAO_BOLETO_BANCO_DISTRIBUI = 1;    // Banco distribui
+    TIPO_DISTRIBUICAO_BOLETO_CLIENTE_DISTRIBUI = 2;  // Cliente distribui
+    TIPO_DISTRIBUICAO_BOLETO_BANCO_ENVIA_EMAIL = 3;  // Banco envia por e-mail
+    TIPO_DISTRIBUICAO_BOLETO_BANCO_ENVIA_SMS = 4;    // Banco envia por SMS
+}
+
+// Tipo de moeda - código da moeda para o boleto.
+enum TipoMoeda {
+    TIPO_MOEDA_FAG = 0;  // Fator Acumulado de Juros - TR (seguros)
+    TIPO_MOEDA_IDT = 1;  // IDTR - Seguros
+    TIPO_MOEDA_REA = 2;  // Real
+    TIPO_MOEDA_USD = 3;  // Dólar Americano
+    TIPO_MOEDA_BRL = 4;  // Real (padrão FEBRABAN)
+}
+
+// Código de protesto - define se e quando o título será protestado.
+// Protesto é o registro formal em cartório de título não pago, afetando o crédito do pagador.
+enum TipoCodigoProtesto {
+    TIPO_CODIGO_PROTESTO_NAO_PROTESTAR = 0;              // Não protestar
+    TIPO_CODIGO_PROTESTO_PROTESTAR_DIAS_CORRIDOS = 1;    // Protestar após X dias corridos
+    TIPO_CODIGO_PROTESTO_PROTESTAR_DIAS_UTEIS = 2;       // Protestar após X dias úteis
+    TIPO_CODIGO_PROTESTO_UTILIZAR_PERFIL_BENEFICIARIO = 3;        // Usar perfil do beneficiário
+    TIPO_CODIGO_PROTESTO_CANCELAMENTO_PROTESTO_AUTOMATICO = 4;    // Cancelamento automático do protesto
+    TIPO_CODIGO_PROTESTO_NEGATIVACAO_SEM_PROTESTO = 8;   // Negativação sem protesto (apenas registro negativo)
+}
+
+// Código de baixa/devolução - define o que fazer com o título após protesto ou prazo.
+enum TipoCodigoBaixaDevolucao {
+    TIPO_CODIGO_BAIXA_DEVOLUCAO_NAO_BAIXAR_NAO_DEVOLVER = 0; // Não baixar, não devolver
+    TIPO_CODIGO_BAIXA_DEVOLUCAO_BAIXAR_DEVOLVER = 1;         // Baixar e devolver ao beneficiário
 }

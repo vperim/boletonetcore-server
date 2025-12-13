@@ -59,9 +59,3 @@ docs/
 **/*Exemplo*
 **/*Example*
 **/*Sample*
-
-# Git info for labels (keep these)
-!.git/HEAD
-!.git/config
-!.git/packed-refs
-!.git/refs/heads/**

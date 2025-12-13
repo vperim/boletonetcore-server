@@ -9,104 +9,296 @@ import "boletonetcore/boletos/v1/pagador.proto";
 
 package boletonetcore.boletos.v1;
 
-// Input data for a single boleto
-message BoletoInput {
-    // Payer information
+// Dados de entrada para geração de um boleto.
+message Boleto {
+    // Dados do pagador (sacado/devedor).
     Pagador pagador = 1;
 
-    // Due date
+    // Data de vencimento do boleto.
     google.protobuf.Timestamp data_vencimento = 2;
 
-    // Document value
+    // Valor do título (valor a ser pago).
     boletonetcore.types.Money valor_titulo = 3;
 
-    // Our number (bank reference)
+    // Nosso número - identificador interno do banco para o título.
+    // Número único usado pelo banco para identificar o boleto.
     string nosso_numero = 4;
 
-    // Document number
+    // Número do documento - identificador interno do beneficiário.
+    // Número da fatura/invoice usado pelo beneficiário para controle.
     string numero_documento = 5;
 
-    // Document species type
+    // Espécie do documento (DM, NP, RC, etc).
     TipoEspecieDocumento especie_documento = 6;
 
-    // Acceptance: "N", "A", or "S" (default: "N")
+    // Aceite do título: "N" (não aceito), "A" (aceito) ou "S" (aceito presumido).
+    // Padrão: "N".
     string aceite = 7;
 
-    // Issue date
+    // Data de emissão do boleto.
     google.protobuf.Timestamp data_emissao = 8;
 
-    // Processing date
+    // Data de processamento do boleto.
     google.protobuf.Timestamp data_processamento = 9;
 
-    // Control number (participant)
+    // Número de controle do participante (uso interno do beneficiário).
     string numero_controle_participante = 10;
 
-    // Interest start date
+    // === Juros ===
+
+    // Data a partir da qual os juros começam a ser cobrados.
     google.protobuf.Timestamp data_juros = 11;
 
-    // Daily interest value
+    // Valor dos juros por dia de atraso (valor fixo).
     boletonetcore.types.Money valor_juros_dia = 12;
 
-    // Daily interest percentage (as string for precision)
+    // Percentual de juros por dia de atraso (alternativa ao valor fixo).
     string percentual_juros_dia = 13;
 
-    // Interest type
+    // Tipo de cálculo dos juros.
     TipoJuros tipo_juros = 14;
 
-    // Penalty date
+    // === Multa ===
+
+    // Data a partir da qual a multa é aplicada.
     google.protobuf.Timestamp data_multa = 15;
 
-    // Penalty value
+    // Valor da multa (valor fixo).
     boletonetcore.types.Money valor_multa = 16;
 
-    // Penalty percentage (as string for precision)
+    // Percentual da multa (alternativa ao valor fixo).
     string percentual_multa = 17;
 
-    // Penalty type
+    // Tipo de cálculo da multa (valor, percentual ou dispensar).
     TipoCodigoMulta tipo_codigo_multa = 18;
 
-    // Discounts (up to 3)
+    // === Descontos ===
+
+    // Lista de descontos progressivos (até 3).
+    // Cada desconto tem uma data limite e valor.
     repeated Desconto descontos = 19;
 
-    // First instruction code
+    // === Instruções ===
+
+    // Código da primeira instrução bancária.
     string codigo_instrucao_1 = 20;
 
-    // Second instruction code
+    // Código da segunda instrução bancária.
     string codigo_instrucao_2 = 21;
 
-    // Cashier instruction message
+    // Mensagem de instruções para o caixa.
     string mensagem_instrucoes_caixa = 22;
 
-    // Print auxiliary values flag
+    // Indica se deve imprimir valores auxiliares no boleto.
     bool imprimir_valores_auxiliares = 23;
+
+    // === Moeda ===
+
+    // Código da moeda (padrão: 9 = Real).
+    int32 codigo_moeda = 24;
+
+    // Símbolo da moeda (padrão: "R$").
+    string especie_moeda = 25;
+
+    // Quantidade de moeda (para títulos em moeda estrangeira).
+    int32 quantidade_moeda = 26;
+
+    // Valor unitário da moeda.
+    string valor_moeda = 27;
+
+    // Tipo da moeda.
+    TipoMoeda tipo_moeda = 28;
+
+    // === Carteira ===
+
+    // Código da carteira (ex: "109", "1", "17").
+    string carteira = 63;
+
+    // Variação da carteira (ex: "019", "027").
+    string variacao_carteira = 64;
+
+    // Tipo da carteira (cobrança simples, vinculada, etc).
+    TipoCarteira tipo_carteira = 65;
+
+    // === Documento ===
+
+    // Carteira para impressão no boleto (pode diferir da carteira de registro).
+    string carteira_impressao_boleto = 29;
+
+    // Número da parcela (para boletos parcelados).
+    string numero_parcela = 30;
+
+    // Campo de uso do banco.
+    string uso_banco = 31;
+
+    // === Mensagens ===
+
+    // Indica se deve imprimir mensagens de instrução.
+    bool imprimir_mensagem_instrucao = 32;
+
+    // Mensagem para o arquivo de remessa CNAB.
+    string mensagem_arquivo_remessa = 33;
+
+    // Mensagem de protesto.
+    string mensagem_protesto = 34;
+
+    // Mensagem livre (campo customizável).
+    string mensagem_livre = 35;
+
+    // === Valores Adicionais ===
+
+    // Valor de outras despesas.
+    boletonetcore.types.Money valor_outras_despesas = 36;
+
+    // Valor de outros créditos.
+    boletonetcore.types.Money valor_outros_creditos = 37;
+
+    // Valor do IOF (Imposto sobre Operações Financeiras).
+    boletonetcore.types.Money valor_iof = 38;
+
+    // Valor do abatimento (redução concedida).
+    boletonetcore.types.Money valor_abatimento = 39;
+
+    // === Débito Automático ===
+
+    // Emitir boleto para débito automático: "N" (não) ou "S" (sim).
+    string emite_boleto_debito_automatico = 40;
+
+    // Indicador de rateio de crédito.
+    string rateio_credito = 41;
+
+    // Aviso de débito automático em conta corrente.
+    string aviso_debito_automatico_conta_corrente = 42;
+
+    // Quantidade de pagamentos permitidos.
+    string quantidade_pagamentos = 43;
+
+    // Agência a ser debitada.
+    string agencia_debitada = 44;
+
+    // Conta a ser debitada.
+    string conta_debitada = 45;
+
+    // Dígito verificador da agência debitada.
+    string digito_verificador_agencia_debitada = 46;
+
+    // Dígito verificador da agência/conta debitada.
+    string digito_verificador_agencia_conta_debitada = 47;
+
+    // === Protesto/Baixa ===
+
+    // Código de protesto (não protestar, dias corridos, dias úteis, etc).
+    // Protesto é o registro formal em cartório de título não pago.
+    TipoCodigoProtesto codigo_protesto = 48;
+
+    // Quantidade de dias após vencimento para protestar.
+    int32 dias_protesto = 49;
+
+    // Código de baixa/devolução do título.
+    TipoCodigoBaixaDevolucao codigo_baixa_devolucao = 50;
+
+    // Quantidade de dias para baixa/devolução.
+    // Padrão: 60 dias.
+    int32 dias_baixa_devolucao = 51;
+
+    // === Complementos de Instrução ===
+
+    // Complemento da primeira instrução.
+    string complemento_instrucao_1 = 52;
+
+    // Complemento da segunda instrução.
+    string complemento_instrucao_2 = 53;
+
+    // Código da terceira instrução bancária.
+    string codigo_instrucao_3 = 54;
+
+    // Complemento da terceira instrução.
+    string complemento_instrucao_3 = 55;
+
+    // === Outros ===
+
+    // Dias limite para recebimento após vencimento.
+    // Exclusivo para BB e Caixa. Após este prazo, o boleto será baixado.
+    int32 dias_limite_recebimento = 56;
+
+    // Código de distribuição.
+    int32 distribuicao = 57;
+
+    // Dados do avalista (fiador/garantidor do pagamento).
+    Pagador avalista = 58;
+
+    // Texto informativo sobre parcelas.
+    string parcela_informativo = 59;
+
+    // Byte do nosso número (uso interno de alguns bancos).
+    string byte_nosso_numero = 60;
+
+    // QR Code PIX para pagamento instantâneo.
+    string qr_code = 61;
+
+    // ID da transação PIX (TxId).
+    string tx_id = 62;
+
+    // Dígito verificador do nosso número (quando fornecido diretamente).
+    string nosso_numero_dv = 66;
+
+    // Nosso número formatado (quando fornecido, ignora cálculo automático).
+    string nosso_numero_formatado = 67;
+
+    // Dados do código de barras (quando fornecido, ignora cálculo automático).
+    CodigoBarra codigo_barra = 68;
 }
 
-// Discount information
+// Dados do código de barras para atribuição direta (cenário de reconstrução).
+message CodigoBarra {
+    // Código do banco (3 dígitos).
+    string codigo_banco = 1;
+
+    // Código da moeda (padrão: 9 = Real).
+    int32 moeda = 2;
+
+    // Campo livre (25 dígitos, formato específico de cada banco).
+    string campo_livre = 3;
+
+    // Fator de vencimento (dias desde 07/10/1997).
+    int64 fator_vencimento = 4;
+
+    // Valor do documento (10 dígitos, sem decimais - em centavos).
+    string valor_documento = 5;
+
+    // Linha digitável (47 caracteres para digitação manual).
+    string linha_digitavel = 6;
+}
+
+// Informações de desconto para pagamento antecipado.
 message Desconto {
-    // Discount deadline
+    // Data limite para aplicação do desconto.
     google.protobuf.Timestamp data = 1;
 
-    // Discount value
+    // Valor do desconto.
     boletonetcore.types.Money valor = 2;
 }
 
-// Generated boleto output data
+// Dados de saída do boleto gerado.
 message BoletoGerado {
-    // Our number (as provided)
+    // Nosso número (conforme fornecido).
     string nosso_numero = 1;
 
-    // Our number check digit
+    // Dígito verificador do nosso número.
     string nosso_numero_dv = 2;
 
-    // Formatted our number (bank-specific format)
+    // Nosso número formatado (formato específico do banco).
     string nosso_numero_formatado = 3;
 
-    // 44-digit barcode
+    // Código de barras (44 dígitos).
     string codigo_barras = 4;
 
-    // 47-character digitable line
+    // Linha digitável (47 caracteres para digitação manual).
     string linha_digitavel = 5;
 
-    // Document number (echo back)
+    // Número do documento (retorno do valor enviado).
     string numero_documento = 6;
+
+    // Dígito verificador do código de barras (posição 5 do código de barras).
+    string digito_verificador = 7;
 }

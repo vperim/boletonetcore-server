@@ -6,35 +6,69 @@ import "boletonetcore/boletos/v1/enums.proto";
 
 package boletonetcore.boletos.v1;
 
-// Bank account information
+// Dados da conta bancária do beneficiário.
 message ContaBancaria {
-    // Branch number (4 digits)
+    // Número da agência (até 4 dígitos, preenchido com zeros à esquerda).
     string agencia = 1;
 
-    // Branch check digit
+    // Dígito verificador da agência.
     string digito_agencia = 2;
 
-    // Account number
+    // Número da conta corrente.
     string conta = 3;
 
-    // Account check digit
+    // Dígito verificador da conta.
     string digito_conta = 4;
 
-    // Operation code (bank-specific, e.g., Sicredi)
+    // Código de operação/posto da conta.
+    // Usado por bancos específicos (ex: Sicredi usa como "posto" - 2 dígitos).
     string operacao_conta = 5;
 
-    // Covenant/agreement code
+    // Código do convênio/contrato com o banco.
+    // Detalhamento do tipo de cobrança contratado. Consulte seu gerente bancário.
     string codigo_convenio = 6;
 
-    // Registration form type
+    // Tipo de registro da cobrança no banco.
+    // Define se o boleto é registrado, sem registro ou débito automático.
     TipoFormaCadastramento tipo_forma_cadastramento = 7;
 
-    // Boleto print type
+    // Define quem é responsável pela impressão do boleto.
     TipoImpressaoBoleto tipo_impressao_boleto = 8;
 
-    // PIX key
+    // Chave PIX do beneficiário para pagamento via PIX.
     string chave_pix = 9;
 
-    // PIX key type
+    // Tipo da chave PIX (CPF, CNPJ, celular, e-mail ou aleatória).
     TipoChavePix tipo_chave_pix = 10;
+
+    // Tipo do documento (tradicional em papel ou escritural/eletrônico).
+    TipoDocumento tipo_documento = 11;
+
+    // Mensagem do local de pagamento exibida no boleto.
+    // Padrão: "PAGÁVEL EM QUALQUER BANCO."
+    string local_pagamento = 12;
+
+    // Mensagem fixa exibida no topo do boleto.
+    string mensagem_fixa_topo_boleto = 13;
+
+    // Mensagem fixa para o pagador na parte inferior do boleto.
+    string mensagem_fixa_pagador = 14;
+
+    // Código do banco correspondente (quando usa banco intermediário).
+    int32 codigo_banco_correspondente = 15;
+
+    // Nosso número no banco correspondente.
+    string nosso_numero_banco_correspondente = 16;
+
+    // Define como o boleto será distribuído ao pagador.
+    TipoDistribuicaoBoleto tipo_distribuicao = 17;
+
+    // Tipo de carteira padrão para boletos gerados com esta conta.
+    TipoCarteira tipo_carteira_padrao = 18;
+
+    // Código da carteira padrão (ex: "09", "1", "17").
+    string carteira_padrao = 19;
+
+    // Variação da carteira padrão (ex: "019", "A").
+    string variacao_carteira_padrao = 20;
 }

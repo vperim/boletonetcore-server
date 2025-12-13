@@ -4,26 +4,27 @@ option csharp_namespace = "BoletoNetCore.Server.Contracts.Generated.Types";
 
 package boletonetcore.types;
 
-// Represents a Brazilian address.
+// Representa o endereço do beneficiário ou pagador.
 message Endereco {
-    // Street name
-    string logradouro = 1;
+    // Nome da rua/avenida/logradouro (ex: "Rua Exemplo", "Av. Brasil").
+    string logradouro_endereco = 1;
 
-    // Street number
-    string numero = 2;
+    // Número do endereço (ex: "123", "S/N").
+    string logradouro_numero = 2;
 
-    // Complement (apartment, suite, etc.)
-    string complemento = 3;
+    // Complemento do endereço (ex: "Apto 101", "Sala 5", "Cj 333").
+    // Máximo 20 caracteres quando formatado.
+    string logradouro_complemento = 3;
 
-    // Neighborhood
+    // Bairro (ex: "Centro", "Jardins").
     string bairro = 4;
 
-    // City
+    // Nome da cidade (ex: "São Paulo", "Rio de Janeiro").
     string cidade = 5;
 
-    // State code (2 chars, e.g., "SP", "RJ")
+    // Sigla do estado com 2 caracteres (ex: "SP", "RJ", "MG").
     string uf = 6;
 
-    // ZIP code (8 digits, no formatting)
+    // CEP com 8 dígitos sem formatação (ex: "01234567").
     string cep = 7;
 }
