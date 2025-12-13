@@ -19,13 +19,13 @@ public sealed class BoletoGenerator : IBoletoGenerator
         this.rendererFactory = rendererFactory;
     }
 
-    public GenerationResult Generate(GerarBoletoRequest request)
+    public async Task<GenerationResult> GenerateAsync(GerarBoletoRequest request, CancellationToken cancellationToken = default)
     {
         var banco = this.bancoFactory.Create(request.Banco.Codigo);
         banco.Beneficiario ??= new Beneficiario();
         BoletoMapper.MapBancoBeneficiario(request.Banco.Beneficiario, banco.Beneficiario);
         banco.FormataBeneficiario();
-
+        
         var boletos = new BoletoNetCore.Boletos { Banco = banco };
 
         foreach (var input in request.Boletos)
@@ -44,7 +44,7 @@ public sealed class BoletoGenerator : IBoletoGenerator
 
         // 5. Render output
         var renderer = this.rendererFactory.GetRenderer(request.OutputFormat);
-        var content = renderer.Render(boletos);
+        var content = await renderer.RenderAsync(boletos, cancellationToken);
 
         // 6. Build response with metadata
         return new GenerationResult

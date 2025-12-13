@@ -101,9 +101,11 @@ enum TipoChavePix {
 }
 
 // Formato de saída para geração do boleto.
-enum OutputFormat {
-    OUTPUT_FORMAT_UNSPECIFIED = 0;
-    OUTPUT_FORMAT_PDF = 1; // PDF
+enum BoletoOutputFormat {
+    BOLETO_OUTPUT_FORMAT_UNSPECIFIED = 0;
+    BOLETO_OUTPUT_FORMAT_PDF = 1;  // PDF
+    BOLETO_OUTPUT_FORMAT_PNG = 2;  // PNG image
+    BOLETO_OUTPUT_FORMAT_JPEG = 3; // JPEG image
 }
 
 // Tipo de documento - tradicional ou escritural.

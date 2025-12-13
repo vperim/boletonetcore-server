@@ -19,7 +19,7 @@ message GerarBoletoRequest {
     repeated Boleto boletos = 2;
 
     // Formato de saída desejado.
-    OutputFormat output_format = 3;
+    BoletoOutputFormat output_format = 3;
 }
 
 // Resposta com os boletos gerados.

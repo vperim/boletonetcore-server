@@ -62,7 +62,7 @@ public sealed class BoletoV1ServiceIntegrationTests : IClassFixture<BoletoGrpcTe
                     },
                 },
             },
-            OutputFormat = ProtoV1.OutputFormat.Pdf,
+            OutputFormat = ProtoV1.BoletoOutputFormat.Pdf,
         };
         request.Boletos.Add(CreateBoletoInput("00000000001", "DOC001"));
         request.Boletos.Add(CreateBoletoInput("00000000002", "DOC002"));
@@ -103,7 +103,7 @@ public sealed class BoletoV1ServiceIntegrationTests : IClassFixture<BoletoGrpcTe
                     },
                 },
             },
-            OutputFormat = ProtoV1.OutputFormat.Pdf,
+            OutputFormat = ProtoV1.BoletoOutputFormat.Pdf,
         };
         request.Boletos.Add(CreateBoletoInput("00000000001", "DOC001"));
         return request;

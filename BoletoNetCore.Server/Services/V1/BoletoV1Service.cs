@@ -17,11 +17,11 @@ public sealed class BoletoV1Service : BoletoV1.BoletoV1Base
         this.logger = logger;
     }
 
-    public override Task<GerarBoletoResponse> GerarBoleto(GerarBoletoRequest request, ServerCallContext context)
+    public override async Task<GerarBoletoResponse> GerarBoleto(GerarBoletoRequest request, ServerCallContext context)
     {
         ValidateRequest(request);
 
-        var result = this.generator.Generate(request);
+        var result = await this.generator.GenerateAsync(request, context.CancellationToken);
 
         var response = new GerarBoletoResponse
         {
@@ -36,7 +36,7 @@ public sealed class BoletoV1Service : BoletoV1.BoletoV1Base
             result.Boletos.Count,
             request.Banco.Codigo);
 
-        return Task.FromResult(response);
+        return response;
     }
 
     private static void ValidateRequest(GerarBoletoRequest request)

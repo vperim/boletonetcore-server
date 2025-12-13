@@ -33,7 +33,7 @@ try
     var client = new BoletoV1.BoletoV1Client(channel);
 
     // Montar requisição com banco Sicredi (748) - mesmo do exemplo QuestPDF
-    var request = CreateGerarBoletoRequest();
+    var request = CreateGerarBoletoBradescoRequest();
 
     Console.WriteLine($"Gerando {request.Boletos.Count} boletos para o banco {request.Banco.Codigo} (Sicredi)...");
     Console.WriteLine();
@@ -84,7 +84,12 @@ Console.WriteLine("Pressione qualquer tecla para sair...");
 Console.ReadKey();
 return;
 
-static GerarBoletoRequest CreateGerarBoletoRequest()
+static GerarBoletoRequest CreateGerarBoletoBradescoRequest()
+{
+    throw new NotImplementedException();
+}
+
+static GerarBoletoRequest CreateGerarBoletoSindicredRequest()
 {
     // Banco Sicredi (748) - mesmo do exemplo QuestPDF
     var request = new GerarBoletoRequest
@@ -105,6 +110,7 @@ static GerarBoletoRequest CreateGerarBoletoRequest()
                     OperacaoConta = "05",
                     TipoFormaCadastramento = TipoFormaCadastramento.ComRegistro,
                     TipoImpressaoBoleto = TipoImpressaoBoleto.Empresa,
+                    CarteiraPadrao = "1/A"
                 },
                 Endereco = new Endereco
                 {
@@ -118,7 +124,7 @@ static GerarBoletoRequest CreateGerarBoletoRequest()
                 },
             },
         },
-        OutputFormat = OutputFormat.Pdf,
+        OutputFormat = BoletoOutputFormat.Pdf,
     };
 
     request.Boletos.Add(CreateBoletoInput(1));

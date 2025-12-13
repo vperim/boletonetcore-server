@@ -14,16 +14,16 @@ public sealed class OutputRendererFactory : IOutputRendererFactory
         this.renderers = renderers;
     }
 
-    public IBoletoOutputRenderer GetRenderer(OutputFormat format)
+    public IBoletoOutputRenderer GetRenderer(BoletoOutputFormat format)
     {
         // Default to PDF if unspecified
-        var targetFormat = format == OutputFormat.Unspecified ? OutputFormat.Pdf : format;
+        var targetFormat = format == BoletoOutputFormat.Unspecified ? BoletoOutputFormat.Pdf : format;
 
         var renderer = this.renderers.FirstOrDefault(r => r.Format == targetFormat);
 
         if (renderer == null)
         {
-            throw new ArgumentException($"Formato de saída {format} não suportado");
+            throw new ArgumentException($"Formato de saída {format} não suportado. Formatos suportados: PDF, PNG, JPEG");
         }
 
         return renderer;

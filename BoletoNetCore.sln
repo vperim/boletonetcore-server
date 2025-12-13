@@ -7,14 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoletoNetCore", "BoletoNetC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoletoNetCore.Testes", "BoletoNetCore.Testes\BoletoNetCore.Testes.csproj", "{92951948-996F-4F22-AB35-74B06C45E1D4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoletoNetCore.Pdf", "BoletoNetCore.Pdf\BoletoNetCore.Pdf.csproj", "{17C2A467-051B-4DE4-BAAE-9D713EB8EFD6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoletoNetCore.QuestPdf", "BoletoNetCore.QuestPdf\BoletoNetCore.QuestPdf.csproj", "{CF92E047-9D27-434E-AD1E-8CB07EACCF42}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoletoNetCore.QuestPDF.AppTeste", "BoletoNetCore.QuestPDF.AppTeste\BoletoNetCore.QuestPDF.AppTeste.csproj", "{D5332CA6-4354-40C9-BDB3-337B4BDC7C9E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoletoNetCore.WebAPI", "BoletoNetCore.WebAPI\BoletoNetCore.WebAPI.csproj", "{47694BE9-A995-4358-95AC-69F300568A9C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoletoNetCore.Server", "BoletoNetCore.Server\BoletoNetCore.Server.csproj", "{AC13F0DA-CFAE-46FD-8B5F-8B4CC805A314}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
