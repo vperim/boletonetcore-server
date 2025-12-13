@@ -10,7 +10,7 @@ public interface IBoletoOutputRenderer
     /// <summary>
     /// The output format this renderer handles.
     /// </summary>
-    OutputFormat Format { get; }
+    BoletoOutputFormat Format { get; }
 
     /// <summary>
     /// The MIME content type of the rendered output.
@@ -18,11 +18,12 @@ public interface IBoletoOutputRenderer
     string ContentType { get; }
 
     /// <summary>
-    /// Renders the boletos to the output format.
+    /// Renders the boletos to the output format asynchronously.
     /// </summary>
     /// <param name="boletos">Collection of boletos to render</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Rendered content as bytes</returns>
-    byte[] Render(BoletoNetCore.Boletos boletos);
+    Task<byte[]> RenderAsync(BoletoNetCore.Boletos boletos, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -35,5 +36,5 @@ public interface IOutputRendererFactory
     /// </summary>
     /// <param name="format">Desired output format</param>
     /// <returns>Renderer for the format</returns>
-    IBoletoOutputRenderer GetRenderer(OutputFormat format);
+    IBoletoOutputRenderer GetRenderer(BoletoOutputFormat format);
 }

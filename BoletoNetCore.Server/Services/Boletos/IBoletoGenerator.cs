@@ -18,9 +18,10 @@ public sealed class GenerationResult
 public interface IBoletoGenerator
 {
     /// <summary>
-    /// Generates boletos from the request and renders them to the specified format.
+    /// Generates boletos from the request and renders them to the specified format asynchronously.
     /// </summary>
     /// <param name="request">The generation request containing all boleto data</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Generation result with content and metadata</returns>
-    GenerationResult Generate(GerarBoletoRequest request);
+    Task<GenerationResult> GenerateAsync(GerarBoletoRequest request, CancellationToken cancellationToken = default);
 }

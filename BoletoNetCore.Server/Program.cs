@@ -23,7 +23,7 @@ public class Program
 
         builder.Services
             .ConfigureCoreServices()
-            .ConfigureBoletoServices()
+            .ConfigureBoletoServices(builder.Configuration)
             .ConfigureLogging(builder.Configuration)
             .ConfigureGrpc()
             .ConfigureSwagger()

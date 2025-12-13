@@ -1,3 +1,4 @@
+using BoletoNetCore;
 using BoletoNetCore.Server.Interceptors;
 using BoletoNetCore.Server.Services.Boletos;
 using BoletoNetCore.Server.Services.Boletos.Rendering;
@@ -14,11 +15,21 @@ public static class ServiceCollectionExtensions
         return services.AddSingleton(TimeProvider.System);
     }
 
-    public static IServiceCollection ConfigureBoletoServices(this IServiceCollection services)
+    public static IServiceCollection ConfigureBoletoServices(this IServiceCollection services, IConfiguration configuration)
     {
+        var rendererSection = configuration.GetSection("PlaywrightRenderer");
+        services.AddPlaywrightRenderer(options =>
+        {
+            options.MaxConcurrency = rendererSection.GetValue("MaxConcurrency", 4);
+            options.RenderTimeout = TimeSpan.FromSeconds(rendererSection.GetValue("RenderTimeoutSeconds", 30));
+            options.PrewarmOnStart = rendererSection.GetValue("PrewarmOnStart", true);
+            options.RestartOnFailure = rendererSection.GetValue("RestartOnFailure", true);
+        });
         services.AddScoped<IBancoFactory, BancoFactory>();
         services.AddScoped<IBoletoGenerator, BoletoGenerator>();
-        services.AddScoped<IBoletoOutputRenderer, PdfBoletoRenderer>();
+        services.AddScoped<IBoletoOutputRenderer, PlaywrightPdfRenderer>();
+        services.AddScoped<IBoletoOutputRenderer, PlaywrightPngRenderer>();
+        services.AddScoped<IBoletoOutputRenderer, PlaywrightJpegRenderer>();
         services.AddScoped<IOutputRendererFactory, OutputRendererFactory>();
         return services;
     }

@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BoletoNetCore.Pdf\BoletoNetCore.Pdf.csproj" />
     <ProjectReference Include="..\BoletoNetCore\BoletoNetCore.csproj" />
   </ItemGroup>
 

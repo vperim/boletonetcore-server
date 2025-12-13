@@ -1,4 +1,3 @@
-using BoletoNetCore;
 using BoletoNetCore.Server.Contracts.Generated.V1;
 using BoletoNetCore.Server.Services.Boletos.Rendering;
 
@@ -8,28 +7,28 @@ namespace BoletoNetCore.Server.Tests.Services.Boletos.Rendering;
 public sealed class OutputRendererFactoryTests
 {
     [Theory]
-    [InlineData(OutputFormat.Pdf)]
-    [InlineData(OutputFormat.Unspecified)]  // Defaults to PDF
-    public void GetRenderer_SupportedFormat_ReturnsMatchingRenderer(OutputFormat format)
+    [InlineData(BoletoOutputFormat.Pdf)]
+    [InlineData(BoletoOutputFormat.Unspecified)]  // Defaults to PDF
+    public void GetRenderer_SupportedFormat_ReturnsMatchingRenderer(BoletoOutputFormat format)
     {
         // Arrange
-        var pdfRenderer = new FakeRenderer(OutputFormat.Pdf);
+        var pdfRenderer = new FakeRenderer(BoletoOutputFormat.Pdf);
         var sut = new OutputRendererFactory([pdfRenderer]);
 
         // Act
         var result = sut.GetRenderer(format);
 
         // Assert
-        Assert.Equal(OutputFormat.Pdf, result.Format);
+        Assert.Equal(BoletoOutputFormat.Pdf, result.Format);
     }
 
     [Fact]
     public void GetRenderer_UnsupportedFormat_ThrowsArgumentException()
     {
         // Arrange
-        var pdfRenderer = new FakeRenderer(OutputFormat.Pdf);
+        var pdfRenderer = new FakeRenderer(BoletoOutputFormat.Pdf);
         var sut = new OutputRendererFactory([pdfRenderer]);
-        var unsupportedFormat = (OutputFormat)999;
+        var unsupportedFormat = (BoletoOutputFormat)999;
 
         // Act & Assert
         Assert.Throws<ArgumentException>(() => sut.GetRenderer(unsupportedFormat));
@@ -37,14 +36,15 @@ public sealed class OutputRendererFactoryTests
 
     private sealed class FakeRenderer : IBoletoOutputRenderer
     {
-        public OutputFormat Format { get; }
+        public BoletoOutputFormat Format { get; }
         public string ContentType => "application/pdf";
 
-        public FakeRenderer(OutputFormat format)
+        public FakeRenderer(BoletoOutputFormat format)
         {
             Format = format;
         }
 
-        public byte[] Render(BoletoNetCore.Boletos boletos) => [];
+        public Task<byte[]> RenderAsync(BoletoNetCore.Boletos boletos, CancellationToken cancellationToken = default)
+            => Task.FromResult(Array.Empty<byte>());
     }
 }

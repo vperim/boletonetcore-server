@@ -170,7 +170,7 @@ public sealed class BancoBradescoCarteira04 : IClassFixture<BoletoGrpcTestFixtur
                     },
                 },
             },
-            OutputFormat = OutputFormat.Pdf,
+            OutputFormat = BoletoOutputFormat.Pdf,
         };
 
         request.Boletos.Add(new Boleto
