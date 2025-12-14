@@ -5,7 +5,7 @@ using Google.Protobuf.WellKnownTypes;
 
 namespace BoletoNetCore.Server.IntegrationTests.Bancos.Bradesco.Carteiras;
 
-[Trait("Category", "Integration")]
+[Trait("Category", "BancoCarteira")]
 [Trait("Banco", "Bradesco")]
 [Trait("Carteira", "04")]
 public sealed class BancoBradescoCarteira04 : IClassFixture<BoletoGrpcTestFixture>

@@ -1,4 +1,3 @@
-using BoletoNetCore;
 using BoletoNetCore.Server.Services.Boletos;
 using Google.Protobuf.WellKnownTypes;
 using ProtoTypes = BoletoNetCore.Server.Contracts.Generated.Types;
@@ -26,7 +25,7 @@ public sealed class BoletoMapperTests
             Aceite = "S",
         };
         var banco = CreateBancoForTest();
-        var boleto = new BoletoNetCore.Boleto(banco, ignorarCarteira: true);
+        var boleto = new Boleto(banco, ignorarCarteira: true);
 
         // Act
         BoletoMapper.MapBoleto(protoInput, boleto);

@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 
-namespace BoletoNetCore.Server.Tests.Middleware;
+namespace BoletoNetCore.Server.IntegrationTests.Middleware;
 
-[Trait("Category", "Integration")]
+[Trait("Category", "Middleware")]
 public sealed class ApiKeyMiddlewareTests : IAsyncLifetime
 {
     private const string ValidApiKey = "test-api-key-12345";
