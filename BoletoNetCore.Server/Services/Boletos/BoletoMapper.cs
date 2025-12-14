@@ -20,6 +20,17 @@ public static class BoletoMapper
         };
     }
 
+    /// <summary>
+    /// Applies post-validation overrides to boleto.
+    /// These fields must be applied AFTER ValidarDados() to prevent being overwritten by library formatters.
+    /// </summary>
+    public static void ApplyPostValidationOverrides(Contracts.Generated.V1.Boleto proto, Boleto boleto)
+    {
+        // MensagemInstrucoesCaixaFormatado - user can provide pre-formatted message to override library auto-generation
+        if (!string.IsNullOrEmpty(proto.MensagemInstrucoesCaixaFormatado))
+            boleto.MensagemInstrucoesCaixaFormatado = proto.MensagemInstrucoesCaixaFormatado;
+    }
+
     public static void MapBoleto(Contracts.Generated.V1.Boleto proto, Boleto boleto)
     {
         // Carteira

@@ -39,6 +39,9 @@ public sealed class BoletoGenerator : IBoletoGenerator
             if (input.CodigoBarra == null)
                 boleto.ValidarDados();
 
+            // Apply post-validation overrides (fields that would be overwritten by ValidarDados)
+            BoletoMapper.ApplyPostValidationOverrides(input, boleto);
+
             boletos.Add(boleto);
         }
 

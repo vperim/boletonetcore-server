@@ -89,6 +89,10 @@ message Boleto {
     // Mensagem de instruções para o caixa.
     string mensagem_instrucoes_caixa = 22;
 
+    // Mensagem de instruções formatada (override manual).
+    // Se fornecida, sobrescreve a mensagem auto-gerada pela biblioteca.
+    string mensagem_instrucoes_caixa_formatado = 69;
+
     // Indica se deve imprimir valores auxiliares no boleto.
     bool imprimir_valores_auxiliares = 23;
 
