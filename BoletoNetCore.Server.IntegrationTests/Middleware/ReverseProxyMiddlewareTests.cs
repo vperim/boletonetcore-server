@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 
-namespace BoletoNetCore.Server.Tests.Middleware;
+namespace BoletoNetCore.Server.IntegrationTests.Middleware;
 
 /// <summary>
 /// Integration tests for reverse proxy middleware configuration.
@@ -16,7 +16,7 @@ namespace BoletoNetCore.Server.Tests.Middleware;
 /// Tests for KnownProxies/KnownNetworks configuration verify the server starts correctly
 /// with various configurations but cannot verify actual proxy filtering behavior.
 /// </summary>
-[Trait("Category", "Integration")]
+[Trait("Category", "Middleware")]
 public sealed class ReverseProxyMiddlewareTests : IAsyncDisposable
 {
     private const string DiagnosticEndpoint = "/_diagnostics/connection";

@@ -6,25 +6,29 @@ on:
       - server/main
     paths:
       - 'BoletoNetCore/**'
+      - 'BoletoNetCore.Playwright/**'
+      - 'BoletoNetCore.Playwright.Extensions/**'
       - 'BoletoNetCore.QuestPdf/**'
       - 'BoletoNetCore.Server/**'
       - 'BoletoNetCore.Server.Contracts/**'
       - 'BoletoNetCore.Server.Tests/**'
+      - 'BoletoNetCore.Server.IntegrationTests/**'
       - '*.sln'
       - '.github/workflows/**'
     tags:
-      # Semver without 'v' prefix: 1.0.0, 1.2.3-beta.1, 2.0.0-rc.1
-      - '[0-9]+.[0-9]+.[0-9]+'
-      - '[0-9]+.[0-9]+.[0-9]+-*'
+      - '*'
   pull_request:
     branches:
       - server/main
     paths:
       - 'BoletoNetCore/**'
+      - 'BoletoNetCore.Playwright/**'
+      - 'BoletoNetCore.Playwright.Extensions/**'
       - 'BoletoNetCore.QuestPdf/**'
       - 'BoletoNetCore.Server/**'
       - 'BoletoNetCore.Server.Contracts/**'
       - 'BoletoNetCore.Server.Tests/**'
+      - 'BoletoNetCore.Server.IntegrationTests/**'
       - '*.sln'
       - '.github/workflows/**'
   workflow_dispatch:
@@ -42,13 +46,13 @@ env:
 
 jobs:
   # =============================================================================
-  # UNIT TESTS
+  # TESTS
   # =============================================================================
-  unit-tests:
-    name: Unit Tests
+  tests:
+    name: Tests
     if: ${{ !startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -65,105 +69,103 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/packages.lock.json') }}
           restore-keys: |
             nuget-${{ runner.os }}-
 
       - name: Restore dependencies
-        run: dotnet restore BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj
+        run: |
+          dotnet restore BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj
+          dotnet restore BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj
 
       - name: Build
-        run: dotnet build BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj --no-restore -c Release
-
-      - name: Run Unit Tests
         run: |
-          dotnet test BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj \
-            --no-build \
-            -c Release \
-            --filter "Category!=Integration" \
-            --collect:"XPlat Code Coverage" \
-            --logger "trx;LogFileName=unit-tests.trx" \
-            --results-directory ./TestResults
+          dotnet build BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj --no-restore -c Release
+          dotnet build BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj --no-restore -c Release
 
-      - name: Publish coverage summary
-        if: always()
-        run: |
-          echo "## Unit Test Coverage" >> $GITHUB_STEP_SUMMARY
-          COVERAGE_FILE=$(find TestResults -name 'coverage.cobertura.xml' | head -n 1 || true)
-          if [ -n "$COVERAGE_FILE" ]; then
-            echo "Coverage file: $COVERAGE_FILE" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "No coverage file found." >> $GITHUB_STEP_SUMMARY
-          fi
-
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: unit-test-results
-          path: ./TestResults
-
-  # =============================================================================
-  # INTEGRATION TESTS
-  # =============================================================================
-  integration-tests:
-    name: Integration Tests
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Cache NuGet packages
+      - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
-          path: ~/.nuget/packages
-          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/packages.lock.json') }}
           restore-keys: |
-            nuget-${{ runner.os }}-
+            playwright-${{ runner.os }}-
 
-      - name: Restore dependencies
-        run: dotnet restore BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj
+      - name: Install Playwright browsers
+        run: |
+          dotnet tool install --global Microsoft.Playwright.CLI
+          playwright install chromium --with-deps
 
-      - name: Build
-        run: dotnet build BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj --no-restore -c Release
-
-      - name: Run Integration Tests
+      # -------------------------------------------------------------------------
+      # Unit Tests
+      # -------------------------------------------------------------------------
+      - name: 'Tests: BoletoNetCore.Server.Tests'
+        id: server-tests
+        if: always()
+        continue-on-error: true
         run: |
           dotnet test BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj \
             --no-build \
             -c Release \
-            --filter "Category=Integration" \
-            --collect:"XPlat Code Coverage" \
-            --logger "trx;LogFileName=integration-tests.trx" \
+            --logger "trx;LogFileName=server-tests.trx" \
             --results-directory ./TestResults
 
-      - name: Publish coverage summary
+      # -------------------------------------------------------------------------
+      # Integration Tests
+      # -------------------------------------------------------------------------
+      - name: 'Integration: Middleware Tests'
+        id: middleware-tests
         if: always()
+        continue-on-error: true
         run: |
-          echo "## Integration Test Coverage" >> $GITHUB_STEP_SUMMARY
-          COVERAGE_FILE=$(find TestResults -name 'coverage.cobertura.xml' | head -n 1 || true)
-          if [ -n "$COVERAGE_FILE" ]; then
-            echo "Coverage file: $COVERAGE_FILE" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "No coverage file found." >> $GITHUB_STEP_SUMMARY
-          fi
+          dotnet test BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj \
+            --no-build \
+            -c Release \
+            --filter "Category=Middleware" \
+            --logger "trx;LogFileName=integration-middleware.trx" \
+            --results-directory ./TestResults
+
+      - name: 'Integration: Endpoints Tests'
+        id: endpoints-tests
+        if: always()
+        continue-on-error: true
+        run: |
+          dotnet test BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj \
+            --no-build \
+            -c Release \
+            --filter "Category=Endpoints" \
+            --logger "trx;LogFileName=integration-endpoints.trx" \
+            --results-directory ./TestResults
+
+      - name: 'Integration: BancoCarteira Tests'
+        id: bancocarteira-tests
+        if: always()
+        continue-on-error: true
+        run: |
+          dotnet test BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj \
+            --no-build \
+            -c Release \
+            --filter "Category=BancoCarteira" \
+            --logger "trx;LogFileName=integration-bancocarteira.trx" \
+            --results-directory ./TestResults
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: integration-test-results
+          name: test-results
           path: ./TestResults
+
+      - name: Fail if any tests failed
+        if: always()
+        run: |
+          if [[ "${{ steps.server-tests.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.middleware-tests.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.endpoints-tests.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.bancocarteira-tests.outcome }}" == "failure" ]]; then
+            echo "One or more test steps failed"
+            exit 1
+          fi
 
   # =============================================================================
   # PUBLISH (only on tag)
@@ -209,7 +211,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/packages.lock.json') }}
           restore-keys: |
             nuget-${{ runner.os }}-
 
@@ -217,27 +219,80 @@ jobs:
       # Build and Test
       # -------------------------------------------------------------------------
       - name: Restore dependencies
-        run: dotnet restore BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj
+        run: |
+          dotnet restore BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj
+          dotnet restore BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj
+          dotnet restore BoletoNetCore.Server.Contracts/BoletoNetCore.Server.Contracts.csproj
 
       - name: Build
-        run: dotnet build BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj --no-restore -c Release
+        run: |
+          dotnet build BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj --no-restore -c Release
+          dotnet build BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj --no-restore -c Release
 
-      - name: Run Unit Tests
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/packages.lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Playwright browsers
+        run: |
+          dotnet tool install --global Microsoft.Playwright.CLI
+          playwright install chromium --with-deps
+
+      # -------------------------------------------------------------------------
+      # Unit Tests
+      # -------------------------------------------------------------------------
+      - name: 'Tests: BoletoNetCore.Server.Tests'
+        id: server-tests
+        if: always()
+        continue-on-error: true
         run: |
           dotnet test BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj \
             --no-build \
             -c Release \
-            --filter "Category!=Integration" \
-            --logger "trx;LogFileName=unit-tests.trx" \
+            --logger "trx;LogFileName=server-tests.trx" \
             --results-directory ./TestResults
 
-      - name: Run Integration Tests
+      # -------------------------------------------------------------------------
+      # Integration Tests
+      # -------------------------------------------------------------------------
+      - name: 'Integration: Middleware Tests'
+        id: middleware-tests
+        if: always()
+        continue-on-error: true
         run: |
-          dotnet test BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj \
+          dotnet test BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj \
             --no-build \
             -c Release \
-            --filter "Category=Integration" \
-            --logger "trx;LogFileName=integration-tests.trx" \
+            --filter "Category=Middleware" \
+            --logger "trx;LogFileName=integration-middleware.trx" \
+            --results-directory ./TestResults
+
+      - name: 'Integration: Endpoints Tests'
+        id: endpoints-tests
+        if: always()
+        continue-on-error: true
+        run: |
+          dotnet test BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj \
+            --no-build \
+            -c Release \
+            --filter "Category=Endpoints" \
+            --logger "trx;LogFileName=integration-endpoints.trx" \
+            --results-directory ./TestResults
+
+      - name: 'Integration: BancoCarteira Tests'
+        id: bancocarteira-tests
+        if: always()
+        continue-on-error: true
+        run: |
+          dotnet test BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj \
+            --no-build \
+            -c Release \
+            --filter "Category=BancoCarteira" \
+            --logger "trx;LogFileName=integration-bancocarteira.trx" \
             --results-directory ./TestResults
 
       - name: Upload Test Results
@@ -246,6 +301,17 @@ jobs:
         with:
           name: test-results-${{ steps.version.outputs.VERSION }}
           path: ./TestResults
+
+      - name: Fail if any tests failed
+        if: always()
+        run: |
+          if [[ "${{ steps.server-tests.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.middleware-tests.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.endpoints-tests.outcome }}" == "failure" ]] || \
+             [[ "${{ steps.bancocarteira-tests.outcome }}" == "failure" ]]; then
+            echo "One or more test steps failed"
+            exit 1
+          fi
 
       # -------------------------------------------------------------------------
       # NuGet Package
@@ -256,7 +322,7 @@ jobs:
 
           dotnet pack BoletoNetCore.Server.Contracts/BoletoNetCore.Server.Contracts.csproj \
             -c Release \
-            --no-build \
+            --no-restore \
             -o ${{ env.NUGET_DIRECTORY }} \
             -p:PackageVersion=${{ steps.version.outputs.VERSION }} \
             -p:ContinuousIntegrationBuild=true
@@ -310,6 +376,9 @@ jobs:
             type=raw,value=${{ steps.version.outputs.VERSION }}
             type=raw,value=latest,enable=${{ !contains(steps.version.outputs.VERSION, '-') }}
 
+      - name: Compute build date
+        run: echo "BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
@@ -325,7 +394,7 @@ jobs:
           sbom: true
           build-args: |
             VERSION=${{ steps.version.outputs.VERSION }}
-            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            BUILD_DATE=${{ env.BUILD_DATE }}
             VCS_REF=${{ github.sha }}
 
       - name: Publish Docker summary

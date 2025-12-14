@@ -4,7 +4,7 @@ using ProtoV1 = BoletoNetCore.Server.Contracts.Generated.V1;
 
 namespace BoletoNetCore.Server.IntegrationTests;
 
-[Trait("Category", "Integration")]
+[Trait("Category", "Endpoints")]
 public sealed class BoletoV1ServiceIntegrationTests : IClassFixture<BoletoGrpcTestFixture>
 {
     private readonly BoletoGrpcTestFixture fixture;
