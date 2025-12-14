@@ -315,3 +315,5 @@ reportoutput/
 .env
 .env.*
 !.env.example
+.DS_Store
+/BoletoNetCore.Playwright.ConsoleApp/output
