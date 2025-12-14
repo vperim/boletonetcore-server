@@ -23,7 +23,7 @@ namespace BoletoNetCore
             if (!CarteiraFactory<BancoDaycoval>.CarteiraEstaImplementada(contaBancaria.CarteiraComVariacaoPadrao))
                 throw BoletoNetCoreException.CarteiraNaoImplementada(contaBancaria.CarteiraComVariacaoPadrao);
 
-            contaBancaria.FormatarDados("PAGAVEL EM QUALQUER AG NCIA BANC¡RIA, MESMO AP”S VENCIMENTO", "", "", 7);
+            contaBancaria.FormatarDados("PAGAVEL EM QUALQUER AG√äNCIA BANC√ÅRIA, MESMO AP√ìS VENCIMENTO", "", "", 7);
 
             Beneficiario.CodigoFormatado = $"{contaBancaria.Agencia}{(string.IsNullOrEmpty(contaBancaria.DigitoAgencia) ? "" : "-" + contaBancaria.DigitoAgencia)} / {contaBancaria.Conta}{(string.IsNullOrEmpty(contaBancaria.DigitoConta) ? "" : "-" + contaBancaria.DigitoConta)}";
         }

@@ -18,14 +18,14 @@ namespace BoletoNetCore
         public TipoFormaCadastramento TipoFormaCadastramento { get; set; } = TipoFormaCadastramento.ComRegistro;
         public TipoImpressaoBoleto TipoImpressaoBoleto { get; set; } = TipoImpressaoBoleto.Empresa;
         public TipoDocumento TipoDocumento { get; set; } = TipoDocumento.Tradicional;
-        public string LocalPagamento { get; set; } = "PAG¡VEL EM QUALQUER BANCO.";
+        public string LocalPagamento { get; set; } = "PAG√ÅVEL EM QUALQUER BANCO.";
         public string MensagemFixaTopoBoleto { get; set; } = "";
         public string MensagemFixaPagador { get; set; } = "";
         public int CodigoBancoCorrespondente { get; set; }
         public string ChavePix { get; set; }
         public TipoChavePix TipoChavePix { get; set; }
         public string NossoNumeroBancoCorrespondente { get; set; }
-        public string CodigoConvenio { get; set; } // Detalhamento do tipo de cobranÁa que vocÍ contatou. Veja com o gerente de banco
+        public string CodigoConvenio { get; set; } // Detalhamento do tipo de cobran√ßa que voc√™ contatou. Veja com o gerente de banco
         public TipoDistribuicaoBoleto TipoDistribuicao { get; set; } = TipoDistribuicaoBoleto.ClienteDistribui;
 
         public void FormatarDados(string localPagamento, string mensagemFixaTopoBoleto, string mensagemFixaPagador, int digitosConta)

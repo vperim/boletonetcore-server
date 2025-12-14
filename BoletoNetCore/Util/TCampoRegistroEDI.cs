@@ -4,7 +4,7 @@ namespace BoletoNetCore
 {
     public class TCampoRegistroEDI
     {
-        #region Vari·veis Privadas
+        #region Vari√°veis Privadas
         private string _DescricaoCampo;
         private TTiposDadoEDI _TipoCampo;
         private int _TamanhoCampo;
@@ -21,7 +21,7 @@ namespace BoletoNetCore
 
         #region Propriedades
         /// <summary>
-        /// DescriÁ„o do campo no registro EDI (meramente descritivo)
+        /// Descri√ß√£o do campo no registro EDI (meramente descritivo)
         /// </summary>
         public string DescricaoCampo
         {
@@ -30,7 +30,7 @@ namespace BoletoNetCore
         }
 
         /// <summary>
-        /// Tipo de dado de ORIGEM das informaÁıes do campo EDI.
+        /// Tipo de dado de ORIGEM das informa√ß√µes do campo EDI.
         /// </summary>
         public TTiposDadoEDI TipoCampo
         {
@@ -48,8 +48,8 @@ namespace BoletoNetCore
         }
 
         /// <summary>
-        /// Quantidade de casas decimais do campo, caso ele seja do tipo numÈrico sem decimais. Caso
-        /// n„o se aplique ao tipo de dado, o valor da propriedade ser· ignorado nas funÁıes de formataÁ„o.
+        /// Quantidade de casas decimais do campo, caso ele seja do tipo num√©rico sem decimais. Caso
+        /// n√£o se aplique ao tipo de dado, o valor da propriedade ser√° ignorado nas fun√ß√µes de formata√ß√£o.
         /// </summary>
         public int QtdDecimais
         {
@@ -58,7 +58,7 @@ namespace BoletoNetCore
         }
 
         /// <summary>
-        /// Valor de ORIGEM do campo, sem formataÁ„o, no tipo de dado adequado ao campo. O valor deve ser atribuido
+        /// Valor de ORIGEM do campo, sem formata√ß√£o, no tipo de dado adequado ao campo. O valor deve ser atribuido
         /// com o tipo de dado adequado ao seu proposto, por exemplo, Double para representar valor, DateTime para
         /// representar datas e/ou horas, etc.
         /// </summary>
@@ -69,10 +69,10 @@ namespace BoletoNetCore
         }
 
         /// <summary>
-        /// Valor formatado do campo, pronto para ser utilizado no arquivo EDI. A formataÁ„o ser· de acordo
-        /// com a especificada na propriedade TipoCampo, com numÈricos alinhados ‡ direita e zeros ‡ esquerda
-        /// e campos alfanumÈricos alinhados ‡ esquerda e com brancos ‡ direita.
-        /// TambÈm pode receber o valor vindo do arquivo EDI, para ser decodificado e o resultado da decodificaÁ„o na propriedade
+        /// Valor formatado do campo, pronto para ser utilizado no arquivo EDI. A formata√ß√£o ser√° de acordo
+        /// com a especificada na propriedade TipoCampo, com num√©ricos alinhados √† direita e zeros √† esquerda
+        /// e campos alfanum√©ricos alinhados √† esquerda e com brancos √† direita.
+        /// Tamb√©m pode receber o valor vindo do arquivo EDI, para ser decodificado e o resultado da decodifica√ß√£o na propriedade
         /// ValorNatural
         /// </summary>
         public string ValorFormatado
@@ -82,7 +82,7 @@ namespace BoletoNetCore
         }
 
         /// <summary>
-        /// N˙mero de ordem do campo no registro EDI
+        /// N√∫mero de ordem do campo no registro EDI
         /// </summary>
         public int OrdemNoRegistroEDI
         {
@@ -92,7 +92,7 @@ namespace BoletoNetCore
 
         /// <summary>
         /// Caractere separador dos elementos de campos com o tipo DATA. Colocar null caso esta propriedade
-        /// n„o se aplique ao tipo de dado.
+        /// n√£o se aplique ao tipo de dado.
         /// </summary>
         public string SeparadorDatas
         {
@@ -102,7 +102,7 @@ namespace BoletoNetCore
 
         /// <summary>
         /// Caractere separador dos elementos de campos com o tipo HORA. Colocar null caso esta propriedade
-        /// n„o se aplique ao tipo de dado.
+        /// n√£o se aplique ao tipo de dado.
         /// </summary>
         public string SeparadorHora
         {
@@ -111,7 +111,7 @@ namespace BoletoNetCore
         }
 
         /// <summary>
-        /// PosiÁ„o do caracter inicial do campo no arquivo EDI
+        /// Posi√ß√£o do caracter inicial do campo no arquivo EDI
         /// </summary>
         public int PosicaoInicial
         {
@@ -125,7 +125,7 @@ namespace BoletoNetCore
             set { _PosicaoFinal = value; }
         }
         /// <summary>
-        /// Caractere de Preenchimento do campo da posiÁ„o inicial atÈ a posiÁ„o final
+        /// Caractere de Preenchimento do campo da posi√ß√£o inicial at√© a posi√ß√£o final
         /// </summary>
         public char Preenchimento
         {
@@ -143,16 +143,16 @@ namespace BoletoNetCore
         }
 
         /// <summary>
-        /// Cria um objeto do tipo TCampoRegistroEDI inicializando as propriedades b·sicas.
+        /// Cria um objeto do tipo TCampoRegistroEDI inicializando as propriedades b√°sicas.
         /// </summary>
         /// <param name="pTipoCampo">Tipo de dado de origem dos dados</param>
-        /// <param name="pPosicaoInicial">PosiÁ„o Inicial do Campo no Arquivo</param>
+        /// <param name="pPosicaoInicial">Posi√ß√£o Inicial do Campo no Arquivo</param>
         /// <param name="pTamanho">Tamanho em caracteres do campo (destino)</param>
         /// <param name="pDecimais">Quantidade de decimais do campo (destino)</param>
-        /// <param name="pValor">Valor do campo (Origem), no tipo de dado adequado ao propÛsito do campo</param>
-        /// <param name="pPreenchimento">Caractere de Preenchimento do campo caso o valor n„o ocupe todo o tamanho</param>
-        /// <param name="pSeparadorHora">Separador de hora padr„o; null para sem separador</param>
-        /// <param name="pSeparadorData">Separador de data padr„o; null para sem separador</param>
+        /// <param name="pValor">Valor do campo (Origem), no tipo de dado adequado ao prop√≥sito do campo</param>
+        /// <param name="pPreenchimento">Caractere de Preenchimento do campo caso o valor n√£o ocupe todo o tamanho</param>
+        /// <param name="pSeparadorHora">Separador de hora padr√£o; null para sem separador</param>
+        /// <param name="pSeparadorData">Separador de data padr√£o; null para sem separador</param>
         public TCampoRegistroEDI(TTiposDadoEDI pTipoCampo, int pPosicaoInicial, int pTamanho, int pDecimais, object pValor, char pPreenchimento, string pSeparadorHora, string pSeparadorData)
         {
             this._TipoCampo = pTipoCampo;
@@ -163,19 +163,19 @@ namespace BoletoNetCore
             this._SeparadorDatas = pSeparadorData;
             this._OrdemNoRegistroEDI = 0;
             this._DescricaoCampo = "";
-            this._PosicaoInicial = pPosicaoInicial - 1; //Compensa a indexaÁ„o com base em zero
+            this._PosicaoInicial = pPosicaoInicial - 1; //Compensa a indexa√ß√£o com base em zero
             this._PosicaoFinal = pPosicaoInicial + this._TamanhoCampo;
             this._Preenchimento = pPreenchimento;
         }
         /// <summary>
-        /// Cria um objeto do tipo TCampoRegistroEDI inicializando as propriedades b·sicas.
+        /// Cria um objeto do tipo TCampoRegistroEDI inicializando as propriedades b√°sicas.
         /// </summary>
         /// <param name="pTipoCampo">Tipo de dado de origem dos dados</param>
-        /// <param name="pPosicaoInicial">PosiÁ„o Inicial do Campo no Arquivo</param>
+        /// <param name="pPosicaoInicial">Posi√ß√£o Inicial do Campo no Arquivo</param>
         /// <param name="pTamanho">Tamanho em caracteres do campo (destino)</param>
         /// <param name="pDecimais">Quantidade de decimais do campo (destino)</param>
-        /// <param name="pValor">Valor do campo (Origem), no tipo de dado adequado ao propÛsito do campo</param>
-        /// <param name="pPreenchimento">Caractere de Preenchimento do campo caso o valor n„o ocupe todo o tamanho</param>
+        /// <param name="pValor">Valor do campo (Origem), no tipo de dado adequado ao prop√≥sito do campo</param>
+        /// <param name="pPreenchimento">Caractere de Preenchimento do campo caso o valor n√£o ocupe todo o tamanho</param>
         public TCampoRegistroEDI(TTiposDadoEDI pTipoCampo, int pPosicaoInicial, int pTamanho, int pDecimais, object pValor, char pPreenchimento)
         {
             this._TipoCampo = pTipoCampo;
@@ -186,15 +186,15 @@ namespace BoletoNetCore
             this._SeparadorDatas = null;
             this._OrdemNoRegistroEDI = 0;
             this._DescricaoCampo = "";
-            this._PosicaoInicial = pPosicaoInicial - 1; //Compensa a indexaÁ„o com base em zero
+            this._PosicaoInicial = pPosicaoInicial - 1; //Compensa a indexa√ß√£o com base em zero
             this._PosicaoFinal = pPosicaoInicial + this._TamanhoCampo;
             this._Preenchimento = pPreenchimento;
         }
         #endregion
 
-        #region MÈtodos P˙blicos
+        #region M√©todos P√∫blicos
         /// <summary>
-        /// Aplica formataÁ„o ao valor do campo em ValorNatural, colocando o resultado na propriedade ValorFormatado
+        /// Aplica formata√ß√£o ao valor do campo em ValorNatural, colocando o resultado na propriedade ValorFormatado
         /// </summary>
         public void CodificarNaturalParaEDI()
         {
@@ -236,7 +236,7 @@ namespace BoletoNetCore
                     if (this._ValorNatural == null)
                     {
                         string aux = "";
-                        this._ValorFormatado = aux.Trim().PadLeft(this._TamanhoCampo, ' ');//Se o N˙mero for NULL, preenche com espaÁos em branco
+                        this._ValorFormatado = aux.Trim().PadLeft(this._TamanhoCampo, ' ');//Se o N√∫mero for NULL, preenche com espa√ßos em branco
                     }
                     else
                     {
@@ -638,7 +638,7 @@ namespace BoletoNetCore
 
         #endregion
 
-        #region MÈtodos Privados e Protegidos
+        #region M√©todos Privados e Protegidos
 
         #endregion
 

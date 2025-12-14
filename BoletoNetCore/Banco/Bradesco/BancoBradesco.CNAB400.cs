@@ -25,28 +25,28 @@ namespace BoletoNetCore
         {
             try
             {
-                //Nº Controle do Participante
+                //NÂº Controle do Participante
                 boleto.NumeroControleParticipante = registro.Substring(37, 25);
 
                 //Carteira (no arquivo retorno, vem com 1 caracter. Ajustamos para 2 caracteres, como no manual do Bradesco.
                 boleto.Carteira = registro.Substring(107, 1).PadLeft(2, '0');
                 boleto.TipoCarteira = TipoCarteira.CarteiraCobrancaSimples;
 
-                //Identificação do Título no Banco
+                //IdentificaÃ§Ã£o do TÃ­tulo no Banco
                 boleto.NossoNumero = registro.Substring(70, 11); //Sem o DV
                 boleto.NossoNumeroDV = registro.Substring(81, 1); //DV
                 boleto.NossoNumeroFormatado = $"{boleto.Carteira}/{boleto.NossoNumero}-{boleto.NossoNumeroDV}";
 
-                //Identificação de Ocorrência
+                //IdentificaÃ§Ã£o de OcorrÃªncia
                 boleto.CodigoMovimentoRetorno = registro.Substring(108, 2);
                 boleto.DescricaoMovimentoRetorno = DescricaoOcorrenciaCnab400(boleto.CodigoMovimentoRetorno);
                 boleto.CodigoMotivoOcorrencia = registro.Substring(318, 10);
 
-                //Número do Documento
+                //NÃºmero do Documento
                 boleto.NumeroDocumento = registro.Substring(116, 10);
                 boleto.EspecieDocumento = AjustaEspecieCnab400(registro.Substring(173, 2));
 
-                //Valores do Título
+                //Valores do TÃ­tulo
                 boleto.ValorTitulo = Convert.ToDecimal(registro.Substring(152, 13)) / 100;
                 boleto.ValorTarifas = Convert.ToDecimal(registro.Substring(175, 13)) / 100;
                 boleto.ValorOutrasDespesas = Convert.ToDecimal(registro.Substring(188, 13)) / 100;
@@ -57,13 +57,13 @@ namespace BoletoNetCore
                 boleto.ValorJurosDia = Convert.ToDecimal(registro.Substring(266, 13)) / 100;
                 boleto.ValorOutrosCreditos = Convert.ToDecimal(registro.Substring(279, 13)) / 100;
 
-                //Data Ocorrência no Banco
+                //Data OcorrÃªncia no Banco
                 boleto.DataProcessamento = Utils.ToDateTime(Utils.ToInt32(registro.Substring(110, 6)).ToString("##-##-##"));
 
-                //Data Vencimento do Título
+                //Data Vencimento do TÃ­tulo
                 boleto.DataVencimento = Utils.ToDateTime(Utils.ToInt32(registro.Substring(146, 6)).ToString("##-##-##"));
 
-                // Data do Crédito
+                // Data do CrÃ©dito
                 boleto.DataCredito = Utils.ToDateTime(Utils.ToInt32(registro.Substring(295, 6)).ToString("##-##-##"));
 
                 // Registro Retorno
@@ -204,12 +204,12 @@ namespace BoletoNetCore
                 reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0327, 008, 0, boleto.Pagador.Endereco.CEP.Replace("-", ""), '0');
                 if (IsNullOrEmpty(boleto.Avalista.Nome))
                 {
-                    // Não tem avalista.
+                    // NÃ£o tem avalista.
                     reg.Adicionar(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0335, 060, 0, Empty, ' ');
                 }
                 else if (boleto.Avalista.TipoCPFCNPJ("A") == "F")
                 {
-                    // Avalista Pessoa Física
+                    // Avalista Pessoa FÃ­sica
                     reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0335, 009, 0, boleto.Avalista.CPFCNPJ.Substring(0, 9), '0');
                     reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0344, 004, 0, "0", '0');
                     reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0348, 002, 0, boleto.Avalista.CPFCNPJ.Substring(9, 2), '0');
@@ -279,7 +279,7 @@ namespace BoletoNetCore
             }
             catch (Exception ex)
             {
-                throw new Exception("Erro durante a geração do registro TRAILER do arquivo de REMESSA.", ex);
+                throw new Exception("Erro durante a geraÃ§Ã£o do registro TRAILER do arquivo de REMESSA.", ex);
             }
         }
 
@@ -292,13 +292,13 @@ namespace BoletoNetCore
                 case "03":
                     return "Entrada Rejeitada";
                 case "06":
-                    return "Liquidação normal";
+                    return "LiquidaÃ§Ã£o normal";
                 case "09":
                     return "Baixado Automaticamente via Arquivo";
                 case "10":
-                    return "Baixado conforme instruções da Agência";
+                    return "Baixado conforme instruÃ§Ãµes da AgÃªncia";
                 case "11":
-                    return "Em Ser - Arquivo de Títulos pendentes";
+                    return "Em Ser - Arquivo de TÃ­tulos pendentes";
                 case "12":
                     return "Abatimento Concedido";
                 case "13":
@@ -306,39 +306,39 @@ namespace BoletoNetCore
                 case "14":
                     return "Vencimento Alterado";
                 case "15":
-                    return "Liquidação em Cartório";
+                    return "LiquidaÃ§Ã£o em CartÃ³rio";
                 case "16":
-                    return "Título Pago em Cheque – Vinculado";
+                    return "TÃ­tulo Pago em Cheque â€“ Vinculado";
                 case "17":
-                    return "Liquidação após baixa ou Título não registrado";
+                    return "LiquidaÃ§Ã£o apÃ³s baixa ou TÃ­tulo nÃ£o registrado";
                 case "18":
-                    return "Acerto de Depositária";
+                    return "Acerto de DepositÃ¡ria";
                 case "19":
-                    return "Confirmação Recebimento Instrução de Protesto";
+                    return "ConfirmaÃ§Ã£o Recebimento InstruÃ§Ã£o de Protesto";
                 case "20":
-                    return "Confirmação Recebimento Instrução Sustação de Protesto";
+                    return "ConfirmaÃ§Ã£o Recebimento InstruÃ§Ã£o SustaÃ§Ã£o de Protesto";
                 case "21":
                     return "Acerto do Controle do Participante";
                 case "23":
-                    return "Entrada do Título em Cartório";
+                    return "Entrada do TÃ­tulo em CartÃ³rio";
                 case "24":
                     return "Entrada rejeitada por CEP Irregular";
                 case "27":
                     return "Baixa Rejeitada";
                 case "28":
-                    return "Débito de tarifas/custas";
+                    return "DÃ©bito de tarifas/custas";
                 case "30":
-                    return "Alteração de Outros Dados Rejeitados";
+                    return "AlteraÃ§Ã£o de Outros Dados Rejeitados";
                 case "32":
-                    return "Instrução Rejeitada";
+                    return "InstruÃ§Ã£o Rejeitada";
                 case "33":
-                    return "Confirmação Pedido Alteração Outros Dados";
+                    return "ConfirmaÃ§Ã£o Pedido AlteraÃ§Ã£o Outros Dados";
                 case "34":
-                    return "Retirado de Cartório e Manutenção Carteira";
+                    return "Retirado de CartÃ³rio e ManutenÃ§Ã£o Carteira";
                 case "35":
-                    return "Desagendamento ) débito automático";
+                    return "Desagendamento ) dÃ©bito automÃ¡tico";
                 case "68":
-                    return "Acerto dos dados ) rateio de Crédito";
+                    return "Acerto dos dados ) rateio de CrÃ©dito";
                 case "69":
                     return "Cancelamento dos dados ) rateio";
                 default:
@@ -398,13 +398,13 @@ namespace BoletoNetCore
 
         public override void CompletarHeaderRetornoCNAB400(string registro)
         {
-            //021 a 037 - Identificações da Empresa Beneficiária no Banco
-            //Deverá ser preenchido(esquerda para direita), da seguinte maneira:
+            //021 a 037 - IdentificaÃ§Ãµes da Empresa BeneficiÃ¡ria no Banco
+            //DeverÃ¡ ser preenchido(esquerda para direita), da seguinte maneira:
             //21 a 21 - Zero
-            //22 a 24 - códigos da carteira
-            //25 a 29 - códigos da Agência Beneficiários, sem o dígito.
+            //22 a 24 - cÃ³digos da carteira
+            //25 a 29 - cÃ³digos da AgÃªncia BeneficiÃ¡rios, sem o dÃ­gito.
             //30 a 36 - Contas Corrente
-            //37 a 37 - dígitos da Conta
+            //37 a 37 - dÃ­gitos da Conta
 
             this.Beneficiario.ContaBancaria = new ContaBancaria();
             this.Beneficiario.ContaBancaria.Agencia = registro.Substring(24, 5);

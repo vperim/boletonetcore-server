@@ -139,9 +139,9 @@ namespace BoletoNetCore
         }
 
         /// <summary>
-        /// Formata o número do CPF 92074286520 para 920.742.865-20
+        /// Formata o nÃºmero do CPF 92074286520 para 920.742.865-20
         /// </summary>
-        /// <param name="cpf">Sequencia numérica de 11 dígitos. Exemplo: 00000000000</param>
+        /// <param name="cpf">Sequencia numÃ©rica de 11 dÃ­gitos. Exemplo: 00000000000</param>
         /// <returns>CPF formatado</returns>
         internal static string FormataCPF(string cpf)
         {
@@ -158,7 +158,7 @@ namespace BoletoNetCore
         /// <summary>
         /// Formata o CNPJ. Exemplo 00.316.449/0001-63
         /// </summary>
-        /// <param name="cnpj">Sequencia numérica de 14 dígitos. Exemplo: 00000000000000</param>
+        /// <param name="cnpj">Sequencia numÃ©rica de 14 dÃ­gitos. Exemplo: 00000000000000</param>
         /// <returns>CNPJ formatado</returns>
         internal static string FormataCNPJ(string cnpj)
         {
@@ -175,7 +175,7 @@ namespace BoletoNetCore
         /// <summary>
         /// Formato o CEP em 00000-000
         /// </summary>
-        /// <param name="cep">Sequencia numérica de 8 dígitos. Exemplo: 00000000</param>
+        /// <param name="cep">Sequencia numÃ©rica de 8 dÃ­gitos. Exemplo: 00000000</param>
         /// <returns>CEP formatado</returns>
         internal static string FormataCEP(string cep)
         {
@@ -199,35 +199,35 @@ namespace BoletoNetCore
         {
             try
             {
-                strline = strline.Replace("ã", "a");
-                strline = strline.Replace('Ã', 'A');
-                strline = strline.Replace('â', 'a');
-                strline = strline.Replace('Â', 'A');
-                strline = strline.Replace('á', 'a');
-                strline = strline.Replace('Á', 'A');
-                strline = strline.Replace('à', 'a');
-                strline = strline.Replace('À', 'A');
-                strline = strline.Replace('ç', 'c');
-                strline = strline.Replace('Ç', 'C');
-                strline = strline.Replace('é', 'e');
-                strline = strline.Replace('É', 'E');
-                strline = strline.Replace('Ê', 'E');
-                strline = strline.Replace('ê', 'e');
-                strline = strline.Replace('õ', 'o');
-                strline = strline.Replace('Õ', 'O');
-                strline = strline.Replace('ó', 'o');
-                strline = strline.Replace('Ó', 'O');
-                strline = strline.Replace('ô', 'o');
-                strline = strline.Replace('Ô', 'O');
-                strline = strline.Replace('ú', 'u');
-                strline = strline.Replace('Ú', 'U');
-                strline = strline.Replace('ü', 'u');
-                strline = strline.Replace('Ü', 'U');
-                strline = strline.Replace('í', 'i');
-                strline = strline.Replace('Í', 'I');
-                strline = strline.Replace('ª', 'a');
-                strline = strline.Replace('º', 'o');
-                strline = strline.Replace('°', 'o');
+                strline = strline.Replace("Ã£", "a");
+                strline = strline.Replace('Ãƒ', 'A');
+                strline = strline.Replace('Ã¢', 'a');
+                strline = strline.Replace('Ã‚', 'A');
+                strline = strline.Replace('Ã¡', 'a');
+                strline = strline.Replace('Ã', 'A');
+                strline = strline.Replace('Ã ', 'a');
+                strline = strline.Replace('Ã€', 'A');
+                strline = strline.Replace('Ã§', 'c');
+                strline = strline.Replace('Ã‡', 'C');
+                strline = strline.Replace('Ã©', 'e');
+                strline = strline.Replace('Ã‰', 'E');
+                strline = strline.Replace('ÃŠ', 'E');
+                strline = strline.Replace('Ãª', 'e');
+                strline = strline.Replace('Ãµ', 'o');
+                strline = strline.Replace('Ã•', 'O');
+                strline = strline.Replace('Ã³', 'o');
+                strline = strline.Replace('Ã“', 'O');
+                strline = strline.Replace('Ã´', 'o');
+                strline = strline.Replace('Ã”', 'O');
+                strline = strline.Replace('Ãº', 'u');
+                strline = strline.Replace('Ãš', 'U');
+                strline = strline.Replace('Ã¼', 'u');
+                strline = strline.Replace('Ãœ', 'U');
+                strline = strline.Replace('Ã­', 'i');
+                strline = strline.Replace('Ã', 'I');
+                strline = strline.Replace('Âª', 'a');
+                strline = strline.Replace('Âº', 'o');
+                strline = strline.Replace('Â°', 'o');
                 strline = strline.Replace('&', 'e');
                 return strline;
             }

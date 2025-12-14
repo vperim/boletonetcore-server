@@ -105,7 +105,7 @@ namespace BoletoNetCore
                 reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0358, 010, 2, boleto.ValorMulta, '0');
                 reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0368, 022, 0, boleto.Avalista.Nome, ' ');
                 reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0390, 002, 0, "0", '0');
-                reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0392, 002, 0, boleto.DiasLimiteRecebimento.HasValue ? boleto.DiasLimiteRecebimento.Value.ToString("00") : "99", '0'); // Caso n„o for informado, ir· definir o m·ximo de dias "99".
+                reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0392, 002, 0, boleto.DiasLimiteRecebimento.HasValue ? boleto.DiasLimiteRecebimento.Value.ToString("00") : "99", '0'); // Caso n√£o for informado, ir√° definir o m√°ximo de dias "99".
                 reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0394, 001, 0, "1", '0');
                 reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0395, 006, 0, numeroRegistroGeral, '0');
 
@@ -132,7 +132,7 @@ namespace BoletoNetCore
             }
             catch (Exception ex)
             {
-                throw new Exception("Erro durante a geraÁ„o do registro TRAILER do arquivo de REMESSA.", ex);
+                throw new Exception("Erro durante a gera√ß√£o do registro TRAILER do arquivo de REMESSA.", ex);
             }
         }
 
@@ -145,7 +145,7 @@ namespace BoletoNetCore
             try
             {
                 if (registro.Substring(0, 9) != "02RETORNO")
-                    throw new Exception("O arquivo n„o È do tipo \"02RETORNO\"");
+                    throw new Exception("O arquivo n√£o √© do tipo \"02RETORNO\"");
             }
             catch (Exception ex)
             {
@@ -157,28 +157,28 @@ namespace BoletoNetCore
         {
             try
             {
-                //N∫ Controle do Participante
+                //N¬∫ Controle do Participante
                 boleto.NumeroControleParticipante = registro.Substring(31, 6);
 
                 //Carteira
                 boleto.Carteira = registro.Substring(106, 2);
                 boleto.TipoCarteira = TipoCarteira.CarteiraCobrancaSimples;
 
-                //IdentificaÁ„o do TÌtulo no Banco
+                //Identifica√ß√£o do T√≠tulo no Banco
                 boleto.NossoNumero = registro.Substring(56, 17);
                 boleto.NossoNumeroDV = registro.Substring(93, 1); //DV
                 boleto.NossoNumeroFormatado = $"{boleto.Carteira}/{boleto.NossoNumero}-{boleto.NossoNumeroDV}";
 
-                //IdentificaÁ„o de OcorrÍncia
+                //Identifica√ß√£o de Ocorr√™ncia
                 boleto.CodigoMovimentoRetorno = registro.Substring(108, 2);
                 boleto.CodigoMotivoOcorrencia = registro.Substring(79, 2);
                 boleto.DescricaoMovimentoRetorno = DescricaoOcorrenciaCnab400(boleto.CodigoMovimentoRetorno, boleto.CodigoMotivoOcorrencia);
 
-                //N˙mero do Documento
+                //N√∫mero do Documento
                 boleto.NumeroDocumento = registro.Substring(116, 10);
                 boleto.EspecieDocumento = AjustaEspecieCnab400(registro.Substring(173, 2));
 
-                //Valores do TÌtulo
+                //Valores do T√≠tulo
                 boleto.ValorTitulo = Convert.ToDecimal(registro.Substring(152, 13)) / 100;
                 boleto.ValorTarifas = Convert.ToDecimal(registro.Substring(175, 13)) / 100;
                 boleto.ValorOutrasDespesas = 0; // Convert.ToDecimal(registro.Substring(188, 13)) / 100;
@@ -189,13 +189,13 @@ namespace BoletoNetCore
                 boleto.ValorJurosDia = Convert.ToDecimal(registro.Substring(266, 13)) / 100;
                 boleto.ValorOutrosCreditos = Convert.ToDecimal(registro.Substring(279, 13)) / 100;
 
-                //Data OcorrÍncia no Banco
+                //Data Ocorr√™ncia no Banco
                 boleto.DataProcessamento = Utils.ToDateTime(Utils.ToInt32(registro.Substring(110, 6)).ToString("##-##-##"));
 
-                //Data Vencimento do TÌtulo
+                //Data Vencimento do T√≠tulo
                 boleto.DataVencimento = Utils.ToDateTime(Utils.ToInt32(registro.Substring(146, 6)).ToString("##-##-##"));
 
-                // Data do CrÈdito
+                // Data do Cr√©dito
                 boleto.DataCredito = Utils.ToDateTime(Utils.ToInt32(registro.Substring(293, 6)).ToString("##-##-##"));
 
                 // Registro Retorno
@@ -245,55 +245,55 @@ namespace BoletoNetCore
                 case "07":
                     return "Prazo de Protesto Alterado";
                 case "08":
-                    return "Prazo de DevoluÁ„o Alterado";
+                    return "Prazo de Devolu√ß√£o Alterado";
                 case "09":
-                    return "AlteraÁ„o Confirmada";
+                    return "Altera√ß√£o Confirmada";
                 case "10":
-                    return "AlteraÁ„o com reemiss„o de boleto confirmada";
+                    return "Altera√ß√£o com reemiss√£o de boleto confirmada";
                 case "11":
-                    return "AlteraÁ„o da opÁ„o de Protesto para DevoluÁ„o Confirmada";
+                    return "Altera√ß√£o da op√ß√£o de Protesto para Devolu√ß√£o Confirmada";
                 case "12":
-                    return "AlteraÁ„o da opÁ„o de DevoluÁ„o para Protesto Confirmada";
+                    return "Altera√ß√£o da op√ß√£o de Devolu√ß√£o para Protesto Confirmada";
                 case "20":
                     return "Em Ser";
                 case "21":
-                    return "LiquidaÁ„o";
+                    return "Liquida√ß√£o";
                 case "22":
-                    return "LiquidaÁ„o em CartÛrio";
+                    return "Liquida√ß√£o em Cart√≥rio";
                 case "23":
-                    return "Baixa por DevoluÁ„o";
+                    return "Baixa por Devolu√ß√£o";
                 case "25":
                     return "Baixa por Protesto";
                 case "26":
-                    return "TÌtulo enviado para CartÛrio";
+                    return "T√≠tulo enviado para Cart√≥rio";
                 case "27":
-                    return "SustaÁ„o de Protesto";
+                    return "Susta√ß√£o de Protesto";
                 case "28":
                     return "Estorno de Protesto";
                 case "29":
-                    return "Estorno de SustaÁ„o de Protesto";
+                    return "Estorno de Susta√ß√£o de Protesto";
                 case "30":
-                    return "AlteraÁ„o de TÌtulo";
+                    return "Altera√ß√£o de T√≠tulo";
                 case "31":
-                    return "Tarifa sobre TÌtulo Vencido";
+                    return "Tarifa sobre T√≠tulo Vencido";
                 case "32":
-                    return "Outras Tarifas de AlteraÁ„o";
+                    return "Outras Tarifas de Altera√ß√£o";
                 case "33":
-                    return "Estorno de Baixa / LiquidaÁ„o";
+                    return "Estorno de Baixa / Liquida√ß√£o";
                 case "34":
                     return "Tarifas Diversas";
                 case "35":
-                    return "LiquidaÁ„o On-line";
+                    return "Liquida√ß√£o On-line";
                 case "36":
-                    return "Estorno de LiquidaÁ„o On-line";
+                    return "Estorno de Liquida√ß√£o On-line";
                 case "37":
-                    return "TransferÍncia para a cobranÁa simples";
+                    return "Transfer√™ncia para a cobran√ßa simples";
                 case "38":
-                    return "TransferÍncia para a cobranÁa descontada";
+                    return "Transfer√™ncia para a cobran√ßa descontada";
                 case "51":
                     return "Reconhecido pelo pagador";
                 case "52":
-                    return "N„o reconhecido pelo pagador";
+                    return "N√£o reconhecido pelo pagador";
                 case "53":
                     return "Recusado no DDA";
                 case "A4":
@@ -311,59 +311,59 @@ namespace BoletoNetCore
             switch (codigo)
             {
                 case "01":
-                    return "Movimento sem Benefici·rio Correspondente";
+                    return "Movimento sem Benefici√°rio Correspondente";
                 case "02":
-                    return "Movimento sem TÌtulo Correspondente";
+                    return "Movimento sem T√≠tulo Correspondente";
                 case "08":
-                    return "Movimento para tÌtulo j· com movimentaÁ„o no dia";
+                    return "Movimento para t√≠tulo j√° com movimenta√ß√£o no dia";
                 case "09":
-                    return "Nosso N˙mero n„o pertence ao Benefici·rio";
+                    return "Nosso N√∫mero n√£o pertence ao Benefici√°rio";
                 case "10":
-                    return "Inclus„o de tÌtulo j· existente na base";
+                    return "Inclus√£o de t√≠tulo j√° existente na base";
                 case "12":
                     return "Movimento duplicado";
                 case "13":
-                    return "Entrada Inv·lida para CobranÁa Caucionada(Benefici·rio n„o possui conta CauÁ„o)";
+                    return "Entrada Inv√°lida para Cobran√ßa Caucionada(Benefici√°rio n√£o possui conta Cau√ß√£o)";
                 case "20":
-                    return "CEP do Pagador n„o encontrado(n„o foi possÌvel a determinaÁ„o da AgÍncia Cobradora para o tÌtulo)";
+                    return "CEP do Pagador n√£o encontrado(n√£o foi poss√≠vel a determina√ß√£o da Ag√™ncia Cobradora para o t√≠tulo)";
                 case "21":
-                    return "AgÍncia cobradora n„o encontrada (agÍncia designada para cobradora n„o cadastrada no sistema)";
+                    return "Ag√™ncia cobradora n√£o encontrada (ag√™ncia designada para cobradora n√£o cadastrada no sistema)";
                 case "22":
-                    return "AgÍncia Benefici·rio n„o encontrada (AgÍncia do Benefici·rio n„o cadastrada no sistema)";
+                    return "Ag√™ncia Benefici√°rio n√£o encontrada (Ag√™ncia do Benefici√°rio n√£o cadastrada no sistema)";
                 case "26":
-                    return "Data de vencimento inv·lida";
+                    return "Data de vencimento inv√°lida";
                 case "44":
-                    return "CEP do pagador inv·lido";
+                    return "CEP do pagador inv√°lido";
                 case "45":
                     return "Data de Vencimento com prazo superior ao limite";
                 case "49":
-                    return "Movimento inv·lido para tÌtulo Baixado / Liquidado";
+                    return "Movimento inv√°lido para t√≠tulo Baixado / Liquidado";
                 case "50":
-                    return "Movimento inv·lido para tÌtulo enviado a CartÛrio";
+                    return "Movimento inv√°lido para t√≠tulo enviado a Cart√≥rio";
                 case "54":
-                    return "Faixa de CEP da AgÍncia Cobradora n„o abrange CEP do Pagador";
+                    return "Faixa de CEP da Ag√™ncia Cobradora n√£o abrange CEP do Pagador";
                 case "55":
-                    return "TÌtulo j· com opÁ„o de DevoluÁ„o";
+                    return "T√≠tulo j√° com op√ß√£o de Devolu√ß√£o";
                 case "56":
                     return "Processo de Protesto em andamento";
                 case "57":
-                    return "TÌtulo j· com opÁ„o de Protesto";
+                    return "T√≠tulo j√° com op√ß√£o de Protesto";
                 case "58":
-                    return "Processo de devoluÁ„o em andamento";
+                    return "Processo de devolu√ß√£o em andamento";
                 case "59":
-                    return "Novo prazo p / Protesto / DevoluÁ„o inv·lido";
+                    return "Novo prazo p / Protesto / Devolu√ß√£o inv√°lido";
                 case "76":
-                    return "AlteraÁ„o do prazo de protesto inv·lida";
+                    return "Altera√ß√£o do prazo de protesto inv√°lida";
                 case "77":
-                    return "AlteraÁ„o do prazo de devoluÁ„o inv·lida";
+                    return "Altera√ß√£o do prazo de devolu√ß√£o inv√°lida";
                 case "81":
-                    return "CEP do Pagador inv·lido";
+                    return "CEP do Pagador inv√°lido";
                 case "82":
-                    return "CNPJ / CPF do Pagador inv·lido (dÌgito n„o confere)";
+                    return "CNPJ / CPF do Pagador inv√°lido (d√≠gito n√£o confere)";
                 case "83":
-                    return "N˙mero do Documento(seu n˙mero) inv·lido";
+                    return "N√∫mero do Documento(seu n√∫mero) inv√°lido";
                 case "84":
-                    return "Protesto inv·lido para tÌtulo sem N˙mero do documento(seu n˙mero)";
+                    return "Protesto inv√°lido para t√≠tulo sem N√∫mero do documento(seu n√∫mero)";
                 default:
                     return "";
             }
