@@ -8,7 +8,7 @@ namespace BoletoNetCore
     /// </summary>
     public class TRegistroEDI
     {
-        #region Variáveis Privadas e Protegidas
+        #region VariÃ¡veis Privadas e Protegidas
         protected TTipoRegistroEDI _TipoRegistro;
         protected int _TamanhoMaximo = 0;
         protected char _CaracterPreenchimento = ' ';
@@ -26,8 +26,8 @@ namespace BoletoNetCore
         }
 
         /// <summary>
-        /// Seta a linha do registro para a decodificação nos campos;
-        /// Obtém a linha decodificada a partir dos campos.
+        /// Seta a linha do registro para a decodificaÃ§Ã£o nos campos;
+        /// ObtÃ©m a linha decodificada a partir dos campos.
         /// </summary>
         public string LinhaRegistro
         {
@@ -36,7 +36,7 @@ namespace BoletoNetCore
         }
 
         /// <summary>
-        /// Coleção dos campos do registro EDI
+        /// ColeÃ§Ã£o dos campos do registro EDI
         /// </summary>
         public List<TCampoRegistroEDI> CamposEDI
         {
@@ -45,14 +45,14 @@ namespace BoletoNetCore
         }
         #endregion
 
-        #region Métodos Públicos
+        #region MÃ©todos PÃºblicos
         public void Adicionar(TTiposDadoEDI tipo, int posicao, int tamanho, int decimais, object valor, char prenchimento)
         {
             this.CamposEDI.Add(new TCampoRegistroEDI(tipo, posicao, tamanho, decimais, valor, prenchimento));
         }
 
         /// <summary>
-        /// Codifica uma linha a partir dos campos; o resultado irá na propriedade LinhaRegistro
+        /// Codifica uma linha a partir dos campos; o resultado irÃ¡ na propriedade LinhaRegistro
         /// </summary>
         public virtual void CodificarLinha()
         {

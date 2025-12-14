@@ -5,7 +5,7 @@ using System.IO;
 namespace BoletoNetCore
 {
     /// <summary>
-    /// Classe Auxiliar com mÈtodos de extens„o para executar comandos a partir de um Boleto ou de uma lista de boletos
+    /// Classe Auxiliar com m√©todos de extens√£o para executar comandos a partir de um Boleto ou de uma lista de boletos
     /// </summary>
     public static class BoletoHelper
     {

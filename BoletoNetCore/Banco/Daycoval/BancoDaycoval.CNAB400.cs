@@ -108,7 +108,7 @@ namespace BoletoNetCore
                 reg.Adicionar(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0352, 030, 0, Beneficiario.Nome, ' ');
                 reg.Adicionar(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0382, 004, 0, Empty, ' ');
                 reg.Adicionar(TTiposDadoEDI.ediAlphaAliEsquerda_____, 0386, 006, 0, Empty, ' ');
-                reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0392, 002, 0, boleto.DiasLimiteRecebimento.HasValue ? boleto.DiasLimiteRecebimento.Value.ToString("00") : "00", '0'); // Caso n„o for informado, ir· definir o m·ximo de dias "99".
+                reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0392, 002, 0, boleto.DiasLimiteRecebimento.HasValue ? boleto.DiasLimiteRecebimento.Value.ToString("00") : "00", '0'); // Caso n√£o for informado, ir√° definir o m√°ximo de dias "99".
                 reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0394, 001, 0, "0", '0');
                 reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0395, 006, 0, numeroRegistroGeral, '0');
 
@@ -140,7 +140,7 @@ namespace BoletoNetCore
             }
             catch (Exception ex)
             {
-                throw new Exception("Erro durante a geraÁ„o do registro da NFe do arquivo de REMESSA.", ex);
+                throw new Exception("Erro durante a gera√ß√£o do registro da NFe do arquivo de REMESSA.", ex);
             }
         }
 
@@ -159,7 +159,7 @@ namespace BoletoNetCore
             }
             catch (Exception ex)
             {
-                throw new Exception("Erro durante a geraÁ„o do registro TRAILER do arquivo de REMESSA.", ex);
+                throw new Exception("Erro durante a gera√ß√£o do registro TRAILER do arquivo de REMESSA.", ex);
             }
         }
 
@@ -172,7 +172,7 @@ namespace BoletoNetCore
             try
             {
                 if (registro.Substring(0, 9) != "02RETORNO")
-                    throw new Exception("O arquivo n„o È do tipo \"02RETORNO\"");
+                    throw new Exception("O arquivo n√£o √© do tipo \"02RETORNO\"");
             }
             catch (Exception ex)
             {
@@ -184,27 +184,27 @@ namespace BoletoNetCore
         {
             try
             {
-                //N∫ Controle do Participante
+                //N¬∫ Controle do Participante
                 boleto.NumeroControleParticipante = registro.Substring(31, 6);
 
                 //Carteira
                 boleto.Carteira = registro.Substring(82, 3);
                 boleto.TipoCarteira = TipoCarteira.CarteiraCobrancaSimples;
 
-                //IdentificaÁ„o do TÌtulo no Banco
+                //Identifica√ß√£o do T√≠tulo no Banco
                 boleto.NossoNumero = registro.Substring(64, 08);
                 boleto.NossoNumeroDV = registro.Substring(72, 1); //DV
                 boleto.NossoNumeroFormatado = $"{boleto.Banco.Beneficiario.ContaBancaria.Agencia}{boleto.Banco.Beneficiario.ContaBancaria.DigitoAgencia}/{boleto.Carteira}/00{boleto.NossoNumero}-{boleto.NossoNumeroDV}";
-                //IdentificaÁ„o de OcorrÍncia
+                //Identifica√ß√£o de Ocorr√™ncia
                 boleto.CodigoMovimentoRetorno = registro.Substring(108, 2);
                 boleto.CodigoMotivoOcorrencia = registro.Substring(377, 2);
                 boleto.DescricaoMovimentoRetorno = DescricaoOcorrenciaCnab400(boleto.CodigoMovimentoRetorno, boleto.CodigoMotivoOcorrencia);
 
-                //N˙mero do Documento
+                //N√∫mero do Documento
                 boleto.NumeroDocumento = registro.Substring(116, 10);
                 boleto.EspecieDocumento = AjustaEspecieCnab400(registro.Substring(173, 2));
 
-                //Valores do TÌtulo
+                //Valores do T√≠tulo
                 boleto.ValorTitulo = Convert.ToDecimal(registro.Substring(152, 13)) / 100;
                 boleto.ValorTarifas = Convert.ToDecimal(registro.Substring(175, 13)) / 100;
                 boleto.ValorOutrasDespesas = 0; // Convert.ToDecimal(registro.Substring(188, 13)) / 100;
@@ -215,13 +215,13 @@ namespace BoletoNetCore
                 boleto.ValorJurosDia = Convert.ToDecimal(registro.Substring(266, 13)) / 100;
                 boleto.ValorOutrosCreditos = Convert.ToDecimal(registro.Substring(279, 13)) / 100;
 
-                //Data OcorrÍncia no Banco
+                //Data Ocorr√™ncia no Banco
                 boleto.DataProcessamento = Utils.ToDateTime(Utils.ToInt32(registro.Substring(110, 6)).ToString("##-##-##"));
 
-                //Data Vencimento do TÌtulo
+                //Data Vencimento do T√≠tulo
                 boleto.DataVencimento = Utils.ToDateTime(Utils.ToInt32(registro.Substring(146, 6)).ToString("##-##-##"));
 
-                // Data do CrÈdito
+                // Data do Cr√©dito
                 boleto.DataCredito = Utils.ToDateTime(Utils.ToInt32(registro.Substring(110, 6)).ToString("##-##-##"));
 
                 // Registro Retorno
@@ -265,13 +265,13 @@ namespace BoletoNetCore
                 case "05":
                     return "Campo Livre Alterado";
                 case "06":
-                    return "LiquidaÁ„o Normal";
+                    return "Liquida√ß√£o Normal";
                 case "08":
-                    return "LiquidaÁ„o em Cartorio";
+                    return "Liquida√ß√£o em Cartorio";
                 case "09":
-                    return "Baixa Autom·tica";
+                    return "Baixa Autom√°tica";
                 case "10":
-                    return "Baixa pÙr ter sido liquidado";
+                    return "Baixa p√¥r ter sido liquidado";
                 case "12":
                     return "Confirma Abatimento";
                 case "13":
@@ -281,31 +281,31 @@ namespace BoletoNetCore
                 case "15":
                     return "Baixa Rejeitada - " + BaixaDescricaoRejeicaoCnab400(codigoRejeicao); 
                 case "16":
-                    return "InstruÁ„o Rejeitada - " + InstrucoesDescricaoRejeicaoCnab400(codigoRejeicao);
+                    return "Instru√ß√£o Rejeitada - " + InstrucoesDescricaoRejeicaoCnab400(codigoRejeicao);
                 case "19":
                     return "Confirma Recebimento da Ordem de Protesto";
                 case "20":
-                    return "Confirma Recebimento da Ordem de SustaÁ„o";
+                    return "Confirma Recebimento da Ordem de Susta√ß√£o";
                 case "22":
                     return "Seu Numero Alterado";
                 case "23":
-                    return "titulo Enviado para CartÛrio";
+                    return "titulo Enviado para Cart√≥rio";
                 case "24":
-                    return "Confirma recebimento de ordem de n„o protestar";
+                    return "Confirma recebimento de ordem de n√£o protestar";
                 case "28":
-                    return "DÈbito de tarifas/custas ñ Correspondentes";
+                    return "D√©bito de tarifas/custas ‚Äì Correspondentes";
                 case "40":
-                    return "Tarifa de entrada (debitada na liquidaÁ„o)";
+                    return "Tarifa de entrada (debitada na liquida√ß√£o)";
                 case "43":
                     return "Baixado por ter sido protestado";
                 case "96":
-                    return "Tarifa sobre instruÁıes ñ MÍs anterior";
+                    return "Tarifa sobre instru√ß√µes ‚Äì M√™s anterior";
                 case "97":
-                    return "Tarifa sobre baixas ñ MÍs anterior";
+                    return "Tarifa sobre baixas ‚Äì M√™s anterior";
                 case "98":
-                    return "Tarifa sobre entradas ñ MÍs anterior";
+                    return "Tarifa sobre entradas ‚Äì M√™s anterior";
                 case "99":
-                    return "Tarifa sobre instruÁ„o de protesto/sustaÁ„o ñ mÍs anterior";
+                    return "Tarifa sobre instru√ß√£o de protesto/susta√ß√£o ‚Äì m√™s anterior";
                 default:
                     return "";
             }
@@ -316,153 +316,153 @@ namespace BoletoNetCore
             switch (codigo)
             {
                 case "03":
-                    return "CEP inv·lido ñ N„o temos cobrador ñ Cobrador n„o Localizado";
+                    return "CEP inv√°lido ‚Äì N√£o temos cobrador ‚Äì Cobrador n√£o Localizado";
                 case "04":
-                    return "Sigla do Estado inv·lida";
+                    return "Sigla do Estado inv√°lida";
                 case "05":
-                    return "Data de Vencimento inv·lida ou fora do prazo mÌnimo";
+                    return "Data de Vencimento inv√°lida ou fora do prazo m√≠nimo";
                 case "06":
-                    return "CÛdigo do Banco inv·lido";
+                    return "C√≥digo do Banco inv√°lido";
                 case "08":
-                    return "Nome do sacado n„o informado";
+                    return "Nome do sacado n√£o informado";
                 case "10":
-                    return "Logradouro n„o informado";
+                    return "Logradouro n√£o informado";
                 case "14":
                     return "Registro em duplicidade";
                 case "19":
-                    return "Data de desconto inv·lida ou maior que a data de vencimento";
+                    return "Data de desconto inv√°lida ou maior que a data de vencimento";
                 case "20":
-                    return "Valor de IOF n„o numÈrico";
+                    return "Valor de IOF n√£o num√©rico";
                 case "21":
-                    return "Movimento para tÌtulo n„o cadastrado no sistema";
+                    return "Movimento para t√≠tulo n√£o cadastrado no sistema";
                 case "22":
-                    return "Valor de desconto + abatimento maior que o valor do tÌtulo";
+                    return "Valor de desconto + abatimento maior que o valor do t√≠tulo";
                 case "25":
-                    return "CNPJ ou CPF do sacado inv·lido (aceito com restriÁıes)";
+                    return "CNPJ ou CPF do sacado inv√°lido (aceito com restri√ß√µes)";
                 case "26":
-                    return "EspÈcies de documento inv·lida (difere de 01...10,13 e 99)";
+                    return "Esp√©cies de documento inv√°lida (difere de 01...10,13 e 99)";
                 case "27":
-                    return "Data de emiss„o do tÌtulo inv·lida";
+                    return "Data de emiss√£o do t√≠tulo inv√°lida";
                 case "28":
-                    return "Seu n˙mero n„o informado";
+                    return "Seu n√∫mero n√£o informado";
                 case "29":
-                    return "CEP È igual a espaÁo ou zeros; ou n„o numÈrico";
+                    return "CEP √© igual a espa√ßo ou zeros; ou n√£o num√©rico";
                 case "30":
-                    return "Valor do tÌtulo n„o numÈrico ou inv·lido";
+                    return "Valor do t√≠tulo n√£o num√©rico ou inv√°lido";
                 case "36":
-                    return "Valor de permanÍncia n„o numÈrico";
+                    return "Valor de perman√™ncia n√£o num√©rico";
                 case "37":
-                    return "Valor de permanÍncia inconsistente, pois, dentro de um mÍs, ser· maior que o valor do tÌtulo";
+                    return "Valor de perman√™ncia inconsistente, pois, dentro de um m√™s, ser√° maior que o valor do t√≠tulo";
                 case "38":
-                    return "Valor de desconto/abatimento n„o numÈrico ou inv·lido";
+                    return "Valor de desconto/abatimento n√£o num√©rico ou inv√°lido";
                 case "39":
-                    return "Valor de abatimento n„o numÈrico";
+                    return "Valor de abatimento n√£o num√©rico";
                 case "42":
-                    return "TÌtulo j· existente em nossos registros. Nosso n˙mero n„o aceito";
+                    return "T√≠tulo j√° existente em nossos registros. Nosso n√∫mero n√£o aceito";
                 case "43":
-                    return "TÌtulo enviado em duplicidade nesse movimento";
+                    return "T√≠tulo enviado em duplicidade nesse movimento";
                 case "44":
-                    return "TÌtulo zerado ou em branco; ou n„o numÈrico na remessa";
+                    return "T√≠tulo zerado ou em branco; ou n√£o num√©rico na remessa";
                 case "46":
-                    return "TÌtulo enviado fora da faixa de Nosso N˙mero, estipulada para o cliente.";
+                    return "T√≠tulo enviado fora da faixa de Nosso N√∫mero, estipulada para o cliente.";
                 case "51":
-                    return "Tipo/N˙mero de InscriÁ„o Sacador/Avalista Inv·lido";
+                    return "Tipo/N√∫mero de Inscri√ß√£o Sacador/Avalista Inv√°lido";
                 case "52":
-                    return "Sacador/Avalista n„o informado";
+                    return "Sacador/Avalista n√£o informado";
                 case "53":
-                    return "Prazo de vencimento do tÌtulo excede ao da contrataÁ„o";
+                    return "Prazo de vencimento do t√≠tulo excede ao da contrata√ß√£o";
                 case "54":
-                    return "Banco informado n„o È nosso correspondente";
+                    return "Banco informado n√£o √© nosso correspondente";
                 case "55":
-                    return "Banco correspondente informado n„o cobra este CEP ou n„o possui faixas de CEP cadastradas";
+                    return "Banco correspondente informado n√£o cobra este CEP ou n√£o possui faixas de CEP cadastradas";
                 case "56":
-                    return "Nosso n˙mero no correspondente n„o foi informado";
+                    return "Nosso n√∫mero no correspondente n√£o foi informado";
                 case "57":
-                    return "Remessa contendo duas instruÁıes incompatÌveis ñ n„o protestar e dias de protesto ou prazo para protesto inv·lido.";
+                    return "Remessa contendo duas instru√ß√µes incompat√≠veis ‚Äì n√£o protestar e dias de protesto ou prazo para protesto inv√°lido.";
                 case "58":
-                    return "Entradas Rejeitadas ñ Reprovado no Represamento para An·lise";
+                    return "Entradas Rejeitadas ‚Äì Reprovado no Represamento para An√°lise";
                 case "60":
-                    return "CNPJ/CPF do sacado inv·lido ñ tÌtulo recusado";
+                    return "CNPJ/CPF do sacado inv√°lido ‚Äì t√≠tulo recusado";
                 case "87":
-                    return "Excede Prazo m·ximo entre emiss„o e vencimento";
+                    return "Excede Prazo m√°ximo entre emiss√£o e vencimento";
                 case "99":
-                    return "TÌtulo n„o acatado pelo banco ñ entrar em contato Gerente da conta";
+                    return "T√≠tulo n√£o acatado pelo banco ‚Äì entrar em contato Gerente da conta";
                 case "AA":
-                    return "ServiÁo de CobranÁa inv·lido";
+                    return "Servi√ßo de Cobran√ßa inv√°lido";
                 case "AB":
-                    return "Nossa Carteira inv·lida";
+                    return "Nossa Carteira inv√°lida";
                 case "AE":
-                    return "TÌtulo n„o possui abatimento";
+                    return "T√≠tulo n√£o possui abatimento";
                 case "AI":
-                    return "Nossa CobranÁa inv·lida";
+                    return "Nossa Cobran√ßa inv√°lida";
                 case "AJ":
-                    return "Modalidade com bancos correspondentes inv·lida";
+                    return "Modalidade com bancos correspondentes inv√°lida";
                 case "AL":
-                    return "Sacado impedido de entrar nesta cobranÁa";
+                    return "Sacado impedido de entrar nesta cobran√ßa";
                 case "AU":
-                    return "Data de ocorrÍncia inv·lida";
+                    return "Data de ocorr√™ncia inv√°lida";
                 case "AV":
-                    return "Valor de tarifa de cobranÁa inv·lida";
+                    return "Valor de tarifa de cobran√ßa inv√°lida";
                 case "AX":
-                    return "TÌtulo em pagamento parcial";
+                    return "T√≠tulo em pagamento parcial";
                 case "BC":
-                    return "An·lise gerencial-sacado inv·lido p/operaÁ„o crÈdito";
+                    return "An√°lise gerencial-sacado inv√°lido p/opera√ß√£o cr√©dito";
                 case "BD":
-                    return "An·lise gerencial-sacado inadimplente";
+                    return "An√°lise gerencial-sacado inadimplente";
                 case "BE":
-                    return "An·lise gerencial-sacado difere do exigido";
+                    return "An√°lise gerencial-sacado difere do exigido";
                 case "BF":
-                    return "An·lise gerencial-vencto excede vencto da operaÁ„o de crÈdito";
+                    return "An√°lise gerencial-vencto excede vencto da opera√ß√£o de cr√©dito";
                 case "BG":
-                    return "An·lise gerencial-sacado com baixa liquidez";
+                    return "An√°lise gerencial-sacado com baixa liquidez";
                 case "BH":
-                    return "An·lise gerencial-sacado excede concentraÁ„o";
+                    return "An√°lise gerencial-sacado excede concentra√ß√£o";
                 case "CC":
-                    return "Valor de iof incompatÌvel com a espÈcie documento";
+                    return "Valor de iof incompat√≠vel com a esp√©cie documento";
                 case "CD":
-                    return "EfetivaÁ„o de protesto sem agenda v·lida";
+                    return "Efetiva√ß√£o de protesto sem agenda v√°lida";
                 case "CE":
-                    return "TÌtulo n„o aceito - pessoa fÌsica";
+                    return "T√≠tulo n√£o aceito - pessoa f√≠sica";
                 case "CF":
-                    return "Excede prazo m·ximo da entrada ao vencimento";
+                    return "Excede prazo m√°ximo da entrada ao vencimento";
                 case "CG":
-                    return "TÌtulo n„o aceito ñ por an·lise gerencial";
+                    return "T√≠tulo n√£o aceito ‚Äì por an√°lise gerencial";
                 case "CH":
-                    return "TÌtulo em espera ñ em an·lise pelo banco";
+                    return "T√≠tulo em espera ‚Äì em an√°lise pelo banco";
                 case "CJ":
-                    return "An·lise gerencial-vencto do titulo abaixo przcurto";
+                    return "An√°lise gerencial-vencto do titulo abaixo przcurto";
                 case "CK":
-                    return "An·lise gerencial-vencto do titulo abaixo przlongo";
+                    return "An√°lise gerencial-vencto do titulo abaixo przlongo";
                 case "CS":
-                    return "TÌtulo rejeitado pela checagem de duplicatas";
+                    return "T√≠tulo rejeitado pela checagem de duplicatas";
                 case "DA":
-                    return "An·lise gerencial ñ Entrada de TÌtulo Descontado com limite cancelado";
+                    return "An√°lise gerencial ‚Äì Entrada de T√≠tulo Descontado com limite cancelado";
                 case "DB":
-                    return "An·lise gerencial ñ Entrada de TÌtulo Descontado com limite vencido";
+                    return "An√°lise gerencial ‚Äì Entrada de T√≠tulo Descontado com limite vencido";
                 case "DC":
-                    return "An·lise gerencial - cedente com limite cancelado";
+                    return "An√°lise gerencial - cedente com limite cancelado";
                 case "DD":
-                    return "An·lise gerencial ñ cedente È sacado e teve seu limite cancelado";
+                    return "An√°lise gerencial ‚Äì cedente √© sacado e teve seu limite cancelado";
                 case "DE":
-                    return "An·lise gerencial - apontamento no Serasa";
+                    return "An√°lise gerencial - apontamento no Serasa";
                 case "DG":
-                    return "EndereÁo sacador/avalista n„o informado";
+                    return "Endere√ßo sacador/avalista n√£o informado";
                 case "DH":
-                    return "Cep do sacador/avalista n„o informado";
+                    return "Cep do sacador/avalista n√£o informado";
                 case "DI":
-                    return "Cidade do sacador/avalista n„o informado";
+                    return "Cidade do sacador/avalista n√£o informado";
                 case "DJ":
-                    return "Estado do sacador/avalista inv·lido ou n informado";
+                    return "Estado do sacador/avalista inv√°lido ou n informado";
                 case "DM":
-                    return "Cliente sem CÛdigo de Flash cadastrado no cobrador";
+                    return "Cliente sem C√≥digo de Flash cadastrado no cobrador";
                 case "DN":
-                    return "TÌtulo Descontado com Prazo ZERO ñ Recusado";
+                    return "T√≠tulo Descontado com Prazo ZERO ‚Äì Recusado";
                 case "DP":
-                    return "Data de ReferÍncia menor que a Data de Emiss„o do TÌtulo";
+                    return "Data de Refer√™ncia menor que a Data de Emiss√£o do T√≠tulo";
                 case "DT":
-                    return "Nosso N˙mero do Correspondente n„o deve ser informado";
+                    return "Nosso N√∫mero do Correspondente n√£o deve ser informado";
                 case "EB":
-                    return "HSBC n„o aceita endereÁo de sacado com mais de 38 caracteres";
+                    return "HSBC n√£o aceita endere√ßo de sacado com mais de 38 caracteres";
                 default:
                     return "";
             }
@@ -473,11 +473,11 @@ namespace BoletoNetCore
             switch (codigo)
             {
                 case "05":
-                    return "SolicitaÁ„o de baixa para tÌtulo j· baixado ou liquidado";
+                    return "Solicita√ß√£o de baixa para t√≠tulo j√° baixado ou liquidado";
                 case "06":
-                    return "SolicitaÁ„o de baixa para tÌtulo n„o registrado no sistema";
+                    return "Solicita√ß√£o de baixa para t√≠tulo n√£o registrado no sistema";
                 case "08":
-                    return "SolicitaÁ„o de baixa para tÌtulo em float";
+                    return "Solicita√ß√£o de baixa para t√≠tulo em float";
                 default:
                     return "";
             }
@@ -488,43 +488,43 @@ namespace BoletoNetCore
             switch (codigo)
             {
                 case "04":
-                    return "Data de Vencimento n„o numÈrica ou inv·lida";
+                    return "Data de Vencimento n√£o num√©rica ou inv√°lida";
                 case "05":
-                    return "Data de vencimento inv·lida ou fora do prazo mÌnimo";
+                    return "Data de vencimento inv√°lida ou fora do prazo m√≠nimo";
                 case "14":
                     return "Registro em duplicidade";
                 case "19":
-                    return "Data de desconto inv·lida ou maior que a data de vencimento";
+                    return "Data de desconto inv√°lida ou maior que a data de vencimento";
                 case "20":
                     return "Campo livre informado";
                 case "21":
-                    return "TÌtulo n„o registrado no sistema";
+                    return "T√≠tulo n√£o registrado no sistema";
                 case "22":
-                    return "TÌtulo baixada ou liquidado";
+                    return "T√≠tulo baixada ou liquidado";
                 case "26":
-                    return "EspÈcie de documento inv·lida";
+                    return "Esp√©cie de documento inv√°lida";
                 case "27":
-                    return "InstruÁ„o n„o aceita, pÙr n„o ter sido emitida ordem de protesto ao cartÛrio";
+                    return "Instru√ß√£o n√£o aceita, p√¥r n√£o ter sido emitida ordem de protesto ao cart√≥rio";
                 case "28":
-                    return "TÌtulo tem instruÁ„o de cartÛrio ativa";
+                    return "T√≠tulo tem instru√ß√£o de cart√≥rio ativa";
                 case "29":
-                    return "TÌtulo n„o tem instruÁ„o de cartÛrio ativa";
+                    return "T√≠tulo n√£o tem instru√ß√£o de cart√≥rio ativa";
                 case "30":
-                    return "Existe instruÁ„o de n„o protestar, ativa para o tÌtulo";
+                    return "Existe instru√ß√£o de n√£o protestar, ativa para o t√≠tulo";
                 case "36":
-                    return "Valor de permanÍncia (mora) n„o numÈrico";
+                    return "Valor de perman√™ncia (mora) n√£o num√©rico";
                 case "37":
-                    return "TÌtulo Descontado InstruÁ„o n„o permitida para a carteira";
+                    return "T√≠tulo Descontado Instru√ß√£o n√£o permitida para a carteira";
                 case "38":
-                    return "Valor do abatimento n„o numÈrico ou maior que a soma do valor do tÌtulo + permanÍncia + multa";
+                    return "Valor do abatimento n√£o num√©rico ou maior que a soma do valor do t√≠tulo + perman√™ncia + multa";
                 case "39":
-                    return "TÌtulo em cartÛrio";
+                    return "T√≠tulo em cart√≥rio";
                 case "40":
-                    return "InstruÁ„o recusada - cobranÁa vinculada / caucionada";
+                    return "Instru√ß√£o recusada - cobran√ßa vinculada / caucionada";
                 case "44":
-                    return "TÌtulo zerado ou em brancos ou n„o numÈrico na remessa";
+                    return "T√≠tulo zerado ou em brancos ou n√£o num√©rico na remessa";
                 case "99":
-                    return "OcorrÍncia desconhecida na remessa";
+                    return "Ocorr√™ncia desconhecida na remessa";
                 default:
                     return "";
             }

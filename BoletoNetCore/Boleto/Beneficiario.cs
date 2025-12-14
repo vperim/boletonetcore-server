@@ -21,7 +21,7 @@ namespace BoletoNetCore
             {
                 string o = value.Replace(".", "").Replace("-", "").Replace("/", "");
                 if (o == null || (o.Length != 11 && o.Length != 14))
-                    throw new ArgumentException("CPF/CNPJ inv·lido: Utilize 11 dÌgitos para CPF ou 14 para CNPJ.");
+                    throw new ArgumentException("CPF/CNPJ inv√°lido: Utilize 11 d√≠gitos para CPF ou 14 para CNPJ.");
                 _cpfcnpj = o;
             }
         }
@@ -38,7 +38,7 @@ namespace BoletoNetCore
                 case "00":
                     return CPFCNPJ.Length <= 11 ? "01" : "02";
             }
-            throw new Exception("TipoCPFCNPJ: Formato do retorno inv·lido.");
+            throw new Exception("TipoCPFCNPJ: Formato do retorno inv√°lido.");
         }
         public string Nome { get; set; }
         public string Observacoes { get; set; } = string.Empty;

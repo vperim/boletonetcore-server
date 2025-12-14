@@ -50,10 +50,10 @@ namespace BoletoNetCore
         public string GerarDetalheRemessaCNAB240(Boleto boleto, ref int numeroRegistro)
         {
             string detalhe = Empty, strline = Empty;
-            // Segmento P (Obrigatório)
+            // Segmento P (ObrigatÃ³rio)
             detalhe += GerarDetalheSegmentoPRemessaCNAB240(boleto, ref numeroRegistro);
 
-            // Segmento Q (Obrigatório)
+            // Segmento Q (ObrigatÃ³rio)
             detalhe += Environment.NewLine;
             detalhe += GerarDetalheSegmentoQRemessaCNAB240(boleto, ref numeroRegistro);
 
@@ -359,7 +359,7 @@ namespace BoletoNetCore
         {
             try
             {
-                // O número de registros no lote é igual ao número de registros gerados + 2 (header e trailler do lote)
+                // O nÃºmero de registros no lote Ã© igual ao nÃºmero de registros gerados + 2 (header e trailler do lote)
                 var numeroRegistrosNoLote = numeroRegistroGeral + 2;
                 var reg = new TRegistroEDI();
                 reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0001, 003, 0, "237", '0');
@@ -388,7 +388,7 @@ namespace BoletoNetCore
         {
             try
             {
-                // O número de registros no arquivo é igual ao número de registros gerados + 4 (header e trailler do lote / header e trailler do arquivo)
+                // O nÃºmero de registros no arquivo Ã© igual ao nÃºmero de registros gerados + 4 (header e trailler do lote / header e trailler do arquivo)
                 var numeroRegistrosNoArquivo = numeroRegistroGeral + 4;
                 var reg = new TRegistroEDI();
                 reg.Adicionar(TTiposDadoEDI.ediNumericoSemSeparador_, 0001, 003, 0, "237", '0');

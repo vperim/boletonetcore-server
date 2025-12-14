@@ -2,10 +2,10 @@ using System.Collections.Generic;
 
 namespace BoletoNetCore
 {
-    //Classes b·sicas para manipulaÁ„o de registros para geraÁ„o/interpretaÁ„o de EDI
+    //Classes b√°sicas para manipula√ß√£o de registros para gera√ß√£o/interpreta√ß√£o de EDI
 
     /// <summary>
-    /// Classe para ordenaÁ„o pela propriedade PosiÁ„o no Registro EDI
+    /// Classe para ordena√ß√£o pela propriedade Posi√ß√£o no Registro EDI
     /// </summary>
     internal class OrdenacaoPorPosEDI : IComparer<TCampoRegistroEDI>
     {
