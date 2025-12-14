@@ -1,25 +1,7 @@
 name: Docker Image
 
 on:
-  push:
-    tags:
-      - '*'
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version tag (e.g., 1.0.0 or 1.0.0-preview.1)'
-        required: true
-        type: string
-      push:
-        description: 'Push image to registry'
-        required: false
-        type: boolean
-        default: true
-      latest:
-        description: 'Tag as latest (only for stable releases)'
-        required: false
-        type: boolean
-        default: false
 
 env:
   REGISTRY: ghcr.io
@@ -41,12 +23,12 @@ jobs:
       - name: Extract and validate version
         id: version
         run: |
-          # Get version from tag or input
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            VERSION=${GITHUB_REF#refs/tags/}
-          else
-            VERSION="${{ inputs.version }}"
+          if [[ ! "$GITHUB_REF" =~ ^refs/tags/ ]]; then
+            echo "This workflow must be run on a tag, not a branch." >&2
+            exit 1
           fi
+
+          VERSION=${GITHUB_REF#refs/tags/}
 
           # Validate semver format (MAJOR.MINOR.PATCH[-prerelease])
           if [[ ! "$VERSION" =~ ^[0-9]+(\.[0-9]+){2}(-[0-9A-Za-z.-]+)?$ ]]; then
@@ -74,7 +56,6 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to GitHub Container Registry
-        if: ${{ github.event_name == 'push' || inputs.push }}
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
@@ -88,7 +69,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=${{ steps.version.outputs.VERSION }}
-            type=raw,value=latest,enable=${{ github.event_name == 'push' && steps.version.outputs.IS_STABLE == 'true' || inputs.latest }}
+            type=raw,value=latest,enable=${{ steps.version.outputs.IS_STABLE == 'true' }}
 
       - name: Compute build date
         run: echo "BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
@@ -98,7 +79,7 @@ jobs:
         with:
           context: .
           file: ./BoletoNetCore.Server/Dockerfile
-          push: ${{ github.event_name == 'push' || inputs.push }}
+          push: true
           platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
