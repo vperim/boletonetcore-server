@@ -1,4 +1,4 @@
-﻿namespace BoletoNetCore.Server.Contracts.Generated.V1;
+namespace BoletoNetCore.Server.Contracts.Generated.V1;
 
 public partial class Banco
 {

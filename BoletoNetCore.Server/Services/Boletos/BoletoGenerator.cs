@@ -25,7 +25,7 @@ public sealed class BoletoGenerator : IBoletoGenerator
         banco.Beneficiario ??= new Beneficiario();
         BoletoMapper.MapBancoBeneficiario(request.Banco.Beneficiario, banco.Beneficiario);
         banco.FormataBeneficiario();
-        
+
         var boletos = new BoletoNetCore.Boletos { Banco = banco };
 
         foreach (var input in request.Boletos)

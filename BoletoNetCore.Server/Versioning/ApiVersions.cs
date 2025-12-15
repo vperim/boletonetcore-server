@@ -1,4 +1,4 @@
-﻿namespace BoletoNetCore.Server.Versioning;
+namespace BoletoNetCore.Server.Versioning;
 
 public static class ApiVersions
 {

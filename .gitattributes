@@ -1,0 +1,49 @@
+# Auto-detect text files and normalize to LF
+* text=auto eol=lf
+
+# Upstream library - preserve original formatting
+BoletoNetCore/** -text
+
+# Source files
+*.cs text diff=csharp
+*.csproj text
+*.props text
+*.targets text
+
+# Solution files (Visual Studio requires CRLF)
+*.sln text eol=crlf
+
+# Windows scripts (require CRLF)
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# Shell scripts (require LF)
+*.sh text eol=lf
+
+# Docker files (require LF for Linux)
+Dockerfile text eol=lf
+.dockerignore text eol=lf
+
+# Config files
+*.json text
+*.yml text
+*.yaml text
+*.xml text
+*.config text
+*.md text
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tar binary
+*.dll binary
+*.exe binary
+*.nupkg binary
+*.snupkg binary
