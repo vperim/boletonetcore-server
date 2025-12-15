@@ -29,6 +29,8 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         tzdata \
         curl \
+        fonts-liberation \
+        fontconfig \
         # Chromium dependencies for Playwright (Ubuntu 24.04 Noble)
         libasound2t64 \
         libatk-bridge2.0-0t64 \
@@ -51,6 +53,7 @@ RUN apt-get update \
         libxfixes3 \
         libxkbcommon0 \
         libxrandr2 \
+    && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
