@@ -1,4 +1,5 @@
 using BoletoNetCore;
+using BoletoNetCore.Server.Hosting;
 using BoletoNetCore.Server.Interceptors;
 using BoletoNetCore.Server.Services.Boletos;
 using BoletoNetCore.Server.Services.Boletos.Rendering;
@@ -12,7 +13,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection ConfigureCoreServices(this IServiceCollection services)
     {
-        return services.AddSingleton(TimeProvider.System);
+        services.AddSingleton(TimeProvider.System);
+        services.AddHostedService<ConfigPrinterHostedService>();
+        return services;
     }
 
     public static IServiceCollection ConfigureBoletoServices(this IServiceCollection services, IConfiguration configuration)

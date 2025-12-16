@@ -9,6 +9,7 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        builder.Configuration.AddEnvironmentVariables(prefix: "BOLETO_");
         Environment.SetEnvironmentVariable("BASEDIR", AppContext.BaseDirectory);
 
         // Kestrel is configured via appsettings.json:
