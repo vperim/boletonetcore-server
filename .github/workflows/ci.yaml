@@ -102,8 +102,8 @@ jobs:
         continue-on-error: true
         run: |
           dotnet vstest ${{ env.BUILD_OUTPUT }}/BoletoNetCore.Server.Tests.dll \
-            --logger "trx;LogFileName=server-tests.trx" \
-            --resultsDirectory ./TestResults
+            --Logger:"trx;LogFileName=server-tests.trx" \
+            --ResultsDirectory:./TestResults
 
       # -------------------------------------------------------------------------
       # Integration Tests
@@ -114,9 +114,9 @@ jobs:
         continue-on-error: true
         run: |
           dotnet vstest ${{ env.BUILD_OUTPUT }}/BoletoNetCore.Server.IntegrationTests.dll \
-            --testCaseFilter "Category=Middleware" \
-            --logger "trx;LogFileName=integration-middleware.trx" \
-            --resultsDirectory ./TestResults
+            --TestCaseFilter:"Category=Middleware" \
+            --Logger:"trx;LogFileName=integration-middleware.trx" \
+            --ResultsDirectory:./TestResults
 
       - name: 'Integration: Endpoints Tests'
         id: endpoints-tests
@@ -124,9 +124,9 @@ jobs:
         continue-on-error: true
         run: |
           dotnet vstest ${{ env.BUILD_OUTPUT }}/BoletoNetCore.Server.IntegrationTests.dll \
-            --testCaseFilter "Category=Endpoints" \
-            --logger "trx;LogFileName=integration-endpoints.trx" \
-            --resultsDirectory ./TestResults
+            --TestCaseFilter:"Category=Endpoints" \
+            --Logger:"trx;LogFileName=integration-endpoints.trx" \
+            --ResultsDirectory:./TestResults
 
       - name: 'Integration: BancoCarteira Tests'
         id: bancocarteira-tests
@@ -134,9 +134,9 @@ jobs:
         continue-on-error: true
         run: |
           dotnet vstest ${{ env.BUILD_OUTPUT }}/BoletoNetCore.Server.IntegrationTests.dll \
-            --testCaseFilter "Category=BancoCarteira" \
-            --logger "trx;LogFileName=integration-bancocarteira.trx" \
-            --resultsDirectory ./TestResults
+            --TestCaseFilter:"Category=BancoCarteira" \
+            --Logger:"trx;LogFileName=integration-bancocarteira.trx" \
+            --ResultsDirectory:./TestResults
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
