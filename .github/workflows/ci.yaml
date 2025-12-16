@@ -41,6 +41,7 @@ env:
   DOTNET_VERSION: '9.0.x'
   NUGET_SOURCE: https://api.nuget.org/v3/index.json
   NUGET_DIRECTORY: ${{ github.workspace }}/nuget
+  BUILD_OUTPUT: ${{ github.workspace }}/build/tests
 
 jobs:
   # =============================================================================
@@ -78,8 +79,8 @@ jobs:
 
       - name: Build
         run: |
-          dotnet build BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj --no-restore -c Release
-          dotnet build BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj --no-restore -c Release
+          dotnet build BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj --no-restore -c Release -o ${{ env.BUILD_OUTPUT }}
+          dotnet build BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj --no-restore -c Release -o ${{ env.BUILD_OUTPUT }}
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
@@ -90,9 +91,7 @@ jobs:
             playwright-${{ runner.os }}-
 
       - name: Install Playwright browsers
-        run: |
-          dotnet tool install --global Microsoft.Playwright.CLI
-          playwright install chromium --with-deps
+        run: pwsh ${{ env.BUILD_OUTPUT }}/playwright.ps1 install chromium --with-deps
 
       # -------------------------------------------------------------------------
       # Unit Tests
@@ -102,11 +101,9 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          dotnet test BoletoNetCore.Server.Tests/BoletoNetCore.Server.Tests.csproj \
-            --no-build \
-            -c Release \
+          dotnet vstest ${{ env.BUILD_OUTPUT }}/BoletoNetCore.Server.Tests.dll \
             --logger "trx;LogFileName=server-tests.trx" \
-            --results-directory ./TestResults
+            --resultsDirectory ./TestResults
 
       # -------------------------------------------------------------------------
       # Integration Tests
@@ -116,36 +113,30 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          dotnet test BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj \
-            --no-build \
-            -c Release \
-            --filter "Category=Middleware" \
+          dotnet vstest ${{ env.BUILD_OUTPUT }}/BoletoNetCore.Server.IntegrationTests.dll \
+            --testCaseFilter "Category=Middleware" \
             --logger "trx;LogFileName=integration-middleware.trx" \
-            --results-directory ./TestResults
+            --resultsDirectory ./TestResults
 
       - name: 'Integration: Endpoints Tests'
         id: endpoints-tests
         if: always()
         continue-on-error: true
         run: |
-          dotnet test BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj \
-            --no-build \
-            -c Release \
-            --filter "Category=Endpoints" \
+          dotnet vstest ${{ env.BUILD_OUTPUT }}/BoletoNetCore.Server.IntegrationTests.dll \
+            --testCaseFilter "Category=Endpoints" \
             --logger "trx;LogFileName=integration-endpoints.trx" \
-            --results-directory ./TestResults
+            --resultsDirectory ./TestResults
 
       - name: 'Integration: BancoCarteira Tests'
         id: bancocarteira-tests
         if: always()
         continue-on-error: true
         run: |
-          dotnet test BoletoNetCore.Server.IntegrationTests/BoletoNetCore.Server.IntegrationTests.csproj \
-            --no-build \
-            -c Release \
-            --filter "Category=BancoCarteira" \
+          dotnet vstest ${{ env.BUILD_OUTPUT }}/BoletoNetCore.Server.IntegrationTests.dll \
+            --testCaseFilter "Category=BancoCarteira" \
             --logger "trx;LogFileName=integration-bancocarteira.trx" \
-            --results-directory ./TestResults
+            --resultsDirectory ./TestResults
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4

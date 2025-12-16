@@ -114,9 +114,8 @@ RUN dotnet publish "BoletoNetCore.Server.csproj" \
     --no-restore \
     /p:UseAppHost=false
 
-# Install Playwright CLI and Chromium browser
-RUN dotnet tool install --global Microsoft.Playwright.CLI \
-    && /root/.dotnet/tools/playwright install chromium
+# Install Chromium browser using Playwright script from published output
+RUN pwsh /app/publish/playwright.ps1 install chromium
 
 # =============================================================================
 # FINAL STAGE - Production image
