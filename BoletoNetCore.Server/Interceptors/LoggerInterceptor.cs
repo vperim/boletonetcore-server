@@ -23,8 +23,9 @@ public class LoggerInterceptor : Interceptor
         {
             return await continuation(request, context);
         }
-        catch (RpcException)
+        catch (RpcException rpcEx)
         {
+            LogRpcException(rpcEx, context);
             throw;
         }
         catch (Exception ex)
@@ -44,8 +45,9 @@ public class LoggerInterceptor : Interceptor
         {
             return await continuation(requestStream, context);
         }
-        catch (RpcException)
+        catch (RpcException rpcEx)
         {
+            LogRpcException(rpcEx, context);
             throw;
         }
         catch (Exception ex)
@@ -66,8 +68,9 @@ public class LoggerInterceptor : Interceptor
         {
             await continuation(request, responseStream, context);
         }
-        catch (RpcException)
+        catch (RpcException rpcEx)
         {
+            LogRpcException(rpcEx, context);
             throw;
         }
         catch (Exception ex)
@@ -88,8 +91,9 @@ public class LoggerInterceptor : Interceptor
         {
             await continuation(requestStream, responseStream, context);
         }
-        catch (RpcException)
+        catch (RpcException rpcEx)
         {
+            LogRpcException(rpcEx, context);
             throw;
         }
         catch (Exception ex)
@@ -102,6 +106,15 @@ public class LoggerInterceptor : Interceptor
         where TRequest : class
     {
         this.logger.LogDebug("gRPC {MethodType} call: {Method}", methodType, context.Method);
+    }
+
+    private void LogRpcException(RpcException rpcEx, ServerCallContext context)
+    {
+        this.logger.LogWarning(
+            "gRPC {Status} in {Method}: {Detail}",
+            rpcEx.StatusCode,
+            context.Method,
+            rpcEx.Status.Detail);
     }
 
     private RpcException HandleException(Exception ex, ServerCallContext context)
