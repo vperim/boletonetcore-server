@@ -53,65 +53,74 @@ dotnet add package BoletoNetCore.Server.Contracts
 ```csharp
 using BoletoNetCore.Server.Contracts.Generated.Types;
 using BoletoNetCore.Server.Contracts.Generated.V1;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
 
 // Conectar ao servidor gRPC
 using var channel = GrpcChannel.ForAddress("http://localhost:5001");
 var client = new BoletoV1.BoletoV1Client(channel);
 
-// Dados do beneficiário (empresa emissora do boleto)
-var enderecoBeneficiario = Endereco.CriarValido(
-    logradouro: "Rua Exemplo",
-    numero: "100",
-    bairro: "Centro",
-    cidade: "São Paulo",
-    uf: "SP",
-    cep: "01234567");
-
-var contaBancaria = ContaBancaria.CriarValido(
-    agencia: "0156",
-    conta: "85305",
-    tipoFormaCadastramento: TipoFormaCadastramento.ComRegistro,
-    tipoImpressaoBoleto: TipoImpressaoBoleto.Empresa,
-    digitoConta: "4",
-    operacaoConta: "05");
-
-var beneficiario = Beneficiario.CriarValido(
-    cpfCnpj: "86875666000109",
-    nome: "Empresa Exemplo LTDA",
-    contaBancaria: contaBancaria,
-    codigo: "85305",
-    endereco: enderecoBeneficiario);
-
-// Dados do pagador (cliente que receberá o boleto)
-var enderecoPagador = Endereco.CriarValido(
-    logradouro: "Av. Brasil",
-    numero: "500",
-    bairro: "Jardins",
-    cidade: "São Paulo",
-    uf: "SP",
-    cep: "04567890");
-
-var pagador = Pagador.CriarValido(
-    cpfCnpj: "44331610128",
-    nome: "João da Silva",
-    endereco: enderecoPagador);
-
-// Dados do boleto
-var boleto = BoletoInput.Builder()
-    .ComPagador(pagador)
-    .ComVencimento(DateTime.Today.AddDays(30))
-    .ComValor(150.00m)
-    .ComNossoNumero("00000001")
-    .ComDocumento("DOC001", TipoEspecieDocumento.Dm)
-    .Build();
-
 // Montar requisição
-var request = GerarBoletoRequest.Builder(bancoCodigo: 748) // Sicredi
-    .ComCarteira("1", TipoCarteira.CobrancaSimples, variacao: "A")
-    .ComBeneficiario(beneficiario)
-    .ComBoleto(boleto)
-    .Build();
+var request = new GerarBoletoRequest
+{
+    Banco = new Banco
+    {
+        Codigo = 748, // Sicredi
+        Beneficiario = new Beneficiario
+        {
+            CpfCnpj = "86875666000109",
+            Nome = "Empresa Exemplo LTDA",
+            Codigo = "85305",
+            ContaBancaria = new ContaBancaria
+            {
+                Agencia = "0156",
+                Conta = "85305",
+                DigitoConta = "4",
+                OperacaoConta = "05",
+                TipoFormaCadastramento = TipoFormaCadastramento.ComRegistro,
+                TipoImpressaoBoleto = TipoImpressaoBoleto.Empresa,
+                CarteiraPadrao = "1/A"
+            },
+            Endereco = new Endereco
+            {
+                LogradouroEndereco = "Rua Exemplo",
+                LogradouroNumero = "100",
+                Bairro = "Centro",
+                Cidade = "São Paulo",
+                Uf = "SP",
+                Cep = "01234567"
+            }
+        }
+    },
+    OutputFormat = BoletoOutputFormat.Pdf
+};
+
+// Adicionar boletos à requisição
+request.Boletos.Add(new Boleto
+{
+    Carteira = "1",
+    VariacaoCarteira = "A",
+    TipoCarteira = TipoCarteira.CarteiraCobrancaSimples,
+    Pagador = new Pagador
+    {
+        CpfCnpj = "44331610128",
+        Nome = "João da Silva",
+        Endereco = new Endereco
+        {
+            LogradouroEndereco = "Av. Brasil",
+            LogradouroNumero = "500",
+            Bairro = "Jardins",
+            Cidade = "São Paulo",
+            Uf = "SP",
+            Cep = "04567890"
+        }
+    },
+    DataVencimento = Timestamp.FromDateTime(DateTime.Today.AddDays(30).ToUniversalTime()),
+    ValorTitulo = 150.00m,
+    NossoNumero = "00000001",
+    NumeroDocumento = "DOC001",
+    EspecieDocumento = TipoEspecieDocumento.Dm
+});
 
 // Gerar boleto
 var response = await client.GerarBoletoAsync(request);
@@ -127,6 +136,8 @@ foreach (var resultado in response.Boletos)
 // Salvar PDF
 await File.WriteAllBytesAsync("boleto.pdf", response.Conteudo.ToByteArray());
 ```
+
+> **Nota**: Os contratos gRPC espelham diretamente as classes do BoletoNetCore, permitindo migração simplificada de código que já utiliza a biblioteca.
 
 ### Outras Linguagens
 
@@ -184,7 +195,7 @@ BoletoNetCore.Server.Contracts/
 
 - String de versão centralizada em `ApiVersions.Versions`
 - Arquivos proto: `boletonetcore/{domínio}/v{n}/{serviço}.proto`
-- Namespace C#: `BoletoNetCore.Protos.Generated.V{n}`
+- Namespace C#: `BoletoNetCore.Server.Contracts.Generated.V{n}`
 - Rotas HTTP: `/api/v{n}/{recurso}`
 - Classes de serviço: `{Domínio}V{n}Service`
 
@@ -241,6 +252,15 @@ import "boletonetcore/types/money.proto";
 message Exemplo {
     boletonetcore.types.Money valor = 1;
 }
+```
+
+O tipo `Money` possui conversões implícitas para `decimal` em C#:
+```csharp
+// Atribuir decimal diretamente
+boleto.ValorTitulo = 150.00m;
+
+// Converter para decimal
+decimal valor = response.Boletos[0].ValorTitulo;
 ```
 
 ## Implementação de Serviço
